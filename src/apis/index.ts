@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import { CheckCertificationRequestDto, EmailCertificationRequestDto, idCheckRequestDto } from "./request/auth";
-import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto } from "./response/auth";
+import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
+import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 
 const responseHandler = <T> (response: AxiosResponse<any, any>) => {
@@ -20,6 +20,7 @@ const API_DOMAIN = `${DOMAIN}`;
 const ID_CHECK_URL = () => `${API_DOMAIN}/auth/id-check`;
 const EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/email-certification`;
 const CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/check-certification`;
+const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 
 //아이디 중복 체크
 export const idCheckRequest = async (requestBody: idCheckRequestDto) => {
@@ -44,3 +45,11 @@ export const checkCertificationRequest = async (requestBody: CheckCertificationR
         .catch(errorHandler);
     return result;
 };
+
+//회원가입
+export const signUpRequest = async (requestBody: SignUpRequestDto) => {
+    const result = await axios.post(SIGN_UP_URL(), requestBody)
+        .then(responseHandler<SignUpResponseDto>)
+        .catch(errorHandler);
+    return result;
+}
