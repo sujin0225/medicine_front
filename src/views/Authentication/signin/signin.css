@@ -1,0 +1,32 @@
+#sign-in {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.sign-in-container {
+    width: 1320px;
+    display: flex; 
+    justify-content: center;
+    margin-top:90px;
+}
+
+.sign-in-box {
+    width: 507px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sign-in-text-box {
+    padding: 100px 0px 70px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sign-in-text {
+    font-size: 32px;
+    font-weight: 300;
+    color: #4D4D4D;
+}
+

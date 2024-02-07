@@ -3,13 +3,13 @@ import { KeyboardEvent, ChangeEvent, useRef, useState } from 'react';
 import './signup.css'
 import { useNavigate } from 'react-router-dom';
 import { idCheckRequestDto, EmailCertificationRequestDto, CheckCertificationRequestDto, SignUpRequestDto } from 'apis/request/auth';
-import { idCheckRequest, emailCertificationRequest, checkCertificationRequest, signUpRequest } from 'apis';
+import { idCheckRequest, emailCertificationRequest, checkCertificationRequest, signUpRequest, SNS_SIGN_IN_URL } from 'apis';
 import { IdCheckResponseDto, EmailCertificationResponseDto, CheckCertificationResponseDto, SignUpResponseDto } from 'apis/response/auth';
 import { ResponseDto } from 'apis/response';
 import { ResponseCode } from 'types/enums';
 import { ResponseBody } from 'types';
 
-export default function SignUp() {
+export default function SignIn() {
 
   const idRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -215,6 +215,10 @@ const onSignUpButtonClickHandler = () => {
   signUpRequest(requestBody).then(signUpResponse);
 };
 
+const onSnsSignInButtonClickHandler = (type: 'kakao' | 'naver') => {
+  window.location.href = SNS_SIGN_IN_URL(type);
+}
+
   const onIdKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
    onIdButtonClickHandler();
@@ -251,11 +255,11 @@ const onSignUpButtonClickHandler = () => {
             <div className='sign-up-text'>{'의약품이 궁금할 땐,'}</div>
             <div className='sign-up-text'>{'이게머약? 에서 검색하세요!'}</div>
           </div>
-          <InputBox ref={idRef} title='아이디' placeholder='아이디' type='text' value={id} onChange={onIdChangeHandler} isErrorMessage={isIdError} message={idMessage} buttonTitle='중복 확인' onButtonClick={onIdButtonClickHandler} onKeydown={onIdKeyDownHandler}/>
-          <InputBox ref={passwordRef} title='비밀번호' placeholder='비밀번호' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} onKeydown={onPasswordKeyDownHandler}/>
-          <InputBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호 확인' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isErrorMessage={isPasswordCheckError} message={passwordCheckMessage} onKeydown={onPasswordCheckKeyDownHandler}/>
-          <InputBox ref={emailRef} title='이메일' placeholder='이메일' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={emailMessage} buttonTitle='인증메일 발송' onButtonClick={onEmailButtonClickHandler} onKeydown={onEmailKeyDownHandler}/>
-          <InputBox ref={certificationNumberRef} title='인증번호' placeholder='인증번호 4자리를 입력해주세요' type='text' value={certificationNumber} onChange={onCertificationNumberChangeHandler} isErrorMessage={isCertificationNumberError} message={certificationNumberMessage} buttonTitle='인증 확인' onButtonClick={onCertificationNumberButtonClickHandler} onKeydown={onCertificationNumberKeyDownHandler}/>
+          <InputBox ref={idRef} title='아이디' placeholder='아이디' type='text' value={id} onChange={onIdChangeHandler} isErrorMessage={isIdError} message={idMessage} buttonTitle='중복 확인' onButtonClick={onIdButtonClickHandler} isSignUp={true} onKeydown={onIdKeyDownHandler}/>
+          <InputBox ref={passwordRef} title='비밀번호' placeholder='비밀번호' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} isSignUp={true} onKeydown={onPasswordKeyDownHandler}/>
+          <InputBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호 확인' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isErrorMessage={isPasswordCheckError} message={passwordCheckMessage} isSignUp={true} onKeydown={onPasswordCheckKeyDownHandler}/>
+          <InputBox ref={emailRef} title='이메일' placeholder='이메일' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={emailMessage} buttonTitle='인증메일 발송' onButtonClick={onEmailButtonClickHandler} isSignUp={true} onKeydown={onEmailKeyDownHandler}/>
+          <InputBox ref={certificationNumberRef} title='인증번호' placeholder='인증번호 4자리를 입력해주세요' type='text' value={certificationNumber} onChange={onCertificationNumberChangeHandler} isErrorMessage={isCertificationNumberError} message={certificationNumberMessage} buttonTitle='인증 확인' onButtonClick={onCertificationNumberButtonClickHandler} isSignUp={true} onKeydown={onCertificationNumberKeyDownHandler}/>
           <div className='primary-button-lg full-width' onClick={onSignUpButtonClickHandler}>회원가입</div>
           <div className='sns-text-box'>
             <div className='sns-line'></div>
@@ -263,8 +267,8 @@ const onSignUpButtonClickHandler = () => {
             <div className='sns-line'></div>
           </div>
           <div className='sns-button-box'>
-            <div className='kakao-sign-in-button'>KAKAO로 회원가입</div>
-            <div className='naver-sign-in-button'>NAVER로 회원가입</div>
+            <div className='kakao-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('kakao')}>KAKAO로 회원가입</div>
+            <div className='naver-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('naver')}>NAVER로 회원가입</div>
           </div>
         </div>
       </div>

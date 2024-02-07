@@ -12,23 +12,31 @@
   cursor: pointer;
 }
 
-.disable-button-lg {
+.primary-button-lg:hover {
+  opacity: 0.95;
+}
+
+.sign-button-lg {
   border-radius: 5px;
   padding: 18px 40px 18px 40px;
   box-sizing: border-box;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  background-color: #C7BA9A;
-  color: #FCFCFC;
+  background-color: #F0F0F0;
+  color: #545454;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  margin-top: 10px;
 }
 
-.primary-button-lg:hover {
-  opacity: 0.95;
+.sign-button-lg:hover {
+  background-color: #BBB9B6;
+  color: #FCFCFC;
+  transition : 0.5s;
 }
+
 
 .full-width {
   width: 100%;

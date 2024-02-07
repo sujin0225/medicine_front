@@ -11,9 +11,34 @@
     padding-bottom: 25px;
 }
 
+.input-box-content-login {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
 .input-box-body {
     display: flex;
     gap: 20px;
+}
+
+.input-box-login-input {
+    flex: 1;
+    border: none;
+    border: 1px solid #F0F0F0;
+    border-radius: 5px;
+    padding: 20px 0px 20px 20px;
+    outline: none;
+    font-size: 16px;
+    font-weight: 400;
+    color: #4D4D4D;
+    font-family: 'pretendard';
+}
+
+.input-box-input::placeholder {
+    color:#8F8F8F;
+    font-size: 16px;
+    font-weight: 400;
 }
 
 .input-box-input {
@@ -81,4 +106,3 @@
     font-weight: 400;
     padding-top: 15px;
 }
-
