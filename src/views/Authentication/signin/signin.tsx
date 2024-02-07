@@ -2,14 +2,19 @@ import InputBox from 'components/InputBox/inputbox';
 import { KeyboardEvent, ChangeEvent, useRef, useState } from 'react';
 import './signin.css'
 import { useNavigate } from 'react-router-dom';
-import { SNS_SIGN_IN_URL } from 'apis';
+import { SNS_SIGN_IN_URL, signInRequest } from 'apis';
 import { ResponseCode } from 'types/enums';
 import { ResponseBody } from 'types';
+import { SignInRequestDto } from 'apis/request/auth';
+import { SignInResponseDto } from 'apis/response/auth';
+import { useCookies } from 'react-cookie';
 
-export default function SignUp() {
+export default function SignIn() {
 
   const idRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
+
+  const [cookie, setCookie] = useCookies();
 
   const[id,setId] = useState<string>('');
   const[password,setPassword] = useState<string>('');
@@ -17,16 +22,29 @@ export default function SignUp() {
 
   const navigate = useNavigate(); 
 
+  const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
+
+    if(!responseBody) return;
+
+    const { code } = responseBody;
+    if(code === ResponseCode.VALIDATION_FAIL) alert('아이디와 비밀번호를 입력하세요.');
+    if(code === ResponseCode.SIGN_IN_FAIL) setMessage('로그인 정보가 일치하지 않습니다.');
+    if(code === ResponseCode.DATABASE_ERROR) alert('데이터베이스 오류입니다.');
+    if(code !== ResponseCode.SUCCESS) return;
+
+    const { token, expirationTime } = responseBody as SignInResponseDto;
+
+    const now = (new Date().getTime()) * 1000;
+    const expires = new Date(now + expirationTime);
+
+    setCookie('accessToken', token, { expires, path: '/' });
+    navigate('/');
+};
+
   const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setId(value);
     setMessage('');
-};
-
-const onIdKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-  if(event.key !== 'Enter') return;
-  if(!passwordRef.current) return;
-  passwordRef.current.focus();
 };
 
 const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -50,8 +68,14 @@ const onSignInButtonClickHandler = () => {
       return;
   }
 
-  // const requestBody: SignInRequestDto = { id, password };
-  // signInRequest(requestBody).then(signInResponse);
+  const requestBody: SignInRequestDto = { id, password };
+  signInRequest(requestBody).then(signInResponse);
+};
+
+const onIdKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+  if(event.key !== 'Enter') return;
+  if(!passwordRef.current) return;
+  passwordRef.current.focus();
 };
 
 const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -69,7 +93,7 @@ const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
           </div>
           <InputBox ref={idRef} title='아이디' placeholder='아이디' type='text' value={id} onChange={onIdChangeHandler} onKeydown={onIdKeyDownHandler}/>
           <InputBox ref={passwordRef} title='비밀번호' placeholder='비밀번호' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage message={message} onKeydown={onPasswordKeyDownHandler}/>
-          <div className='primary-button-lg full-width' onClick={onSignUpButtonClickHandler}>로그인</div>
+          <div className='primary-button-lg full-width' onClick={onSignInButtonClickHandler}>로그인</div>
           <div className='sign-button-lg full-width' onClick={onSignUpButtonClickHandler}>회원가입</div>
           <div className='sns-text-box'>
             <div className='sns-line'></div>

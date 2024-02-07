@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
-import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignUpResponseDto } from "./response/auth";
+import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
+import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { ResponseDto } from "./response";
 
 const responseHandler = <T> (response: AxiosResponse<any, any>) => {
@@ -22,6 +22,7 @@ const ID_CHECK_URL = () => `${API_DOMAIN}/auth/id-check`;
 const EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/email-certification`;
 const CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/check-certification`;
 const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
+const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 
 //아이디 중복 체크
 export const idCheckRequest = async (requestBody: idCheckRequestDto) => {
@@ -53,4 +54,12 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
         .then(responseHandler<SignUpResponseDto>)
         .catch(errorHandler);
     return result;
+};
+
+//로그인
+export const signInRequest = async (requestBody: SignInRequestDto) => {
+    const result = await axios.post(SIGN_IN_URL(), requestBody)
+        .then(responseHandler<SignInResponseDto>)
+        .catch(errorHandler);
+    return result;    
 }
