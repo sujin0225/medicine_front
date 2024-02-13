@@ -1,0 +1,42 @@
+#pagination {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-container {
+    width: 1320px;
+    display: flex; 
+    justify-content: center;
+    gap: 45px;
+    padding-top: 100px;
+    padding-bottom: 200px;
+}
+
+.active {
+    color: #C7BA9A; 
+    font-weight: 600; 
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .public-number {
+    color: #434343; 
+    font-weight: 400; 
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .left-page {
+    background-image: url(image/left.png);
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+
+  .right-page {
+    background-image: url(image/right.png);
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }

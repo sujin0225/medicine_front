@@ -1,32 +1,37 @@
 import './style.css'
 import { medicine } from 'publicapi';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MedicineListItem } from 'types/interface';
 import MedicineItem from 'components/MedicineItem/MedicineItem';
-import { useState } from 'react'
+import Pagination from 'components/Pagination/Pagination';
 
 export default function MedicineSearch() {
-  
   const [medicineList, setMedicineList] = useState<MedicineListItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0); 
 
   useEffect(() => {
-    // medicine 함수를 호출하여 데이터를 가져오고 상태를 업데이트합니다.
-    const fetchData = async () => {
-      try {
-        const data = await medicine(); // medicine 함수를 호출하여 데이터 가져오기
-        // medicine 함수에서 가져온 데이터를 상태에 저장합니다.
-        setMedicineList(data.body.items);
-        console.log("Medicine List:", data.body.items); // 데이터 확인용 로그
-      } catch (error) {
-        console.error('Failed to fetch medicine data:', error);
-      }
-    };
+    fetchData(1); 
+  }, []); 
 
-    fetchData();
-  }, []);
+  const fetchData = async (pageNo: number) => {
+    try {
+      const data = await medicine(pageNo); 
+      setMedicineList(data.body.items); 
+      setTotalCount(data.body.totalCount); 
+      console.log("Medicine List:", data.body.items); 
+    } catch (error) {
+      console.error('데이터 불러오기 에러:', error);
+    }
+  };
 
-  const MedicineSearchTop = () => {
-    return (
+  const handlePageChange = (newPageNo: number) => {
+    setCurrentPage(newPageNo); // 페이지 번호 변경
+    fetchData(newPageNo); // 변경된 페이지 번호로 데이터 다시 가져오기
+  };
+
+  return (
+    <>
       <div className='medicine-search-background'>
         <div id='medicine-search'>
           <div className='medicine-search-background-container'>
@@ -38,25 +43,25 @@ export default function MedicineSearch() {
           </div>
         </div>
       </div>
-    )
-  }
-  
-  const MedicineSearchBottom = () => {
-    return (
       <div id='medicine-search'>
         <div className='medicine-search-container'>
-          {medicineList.map((medicineListItem, index) => (
-            <MedicineItem key={index} medicineListItem={medicineListItem} />
-          ))}
+        <Pagination
+          render={() => (
+            <div id='medicine-search'>
+              <div className='medicine-search-container'>
+                {medicineList.map((medicineListItem, index) => (
+                  <MedicineItem key={index} medicineListItem={medicineListItem} />
+                ))}
+              </div>
+            </div>
+          )}
+          onPageChange={handlePageChange}
+          currentPage={currentPage}
+          totalPages={Math.ceil(totalCount / 16)} 
+        />
         </div>
+        
       </div>
-    );
-  };
-
-  return (
-    <>
-      <MedicineSearchTop />
-      <MedicineSearchBottom />
     </>
-  )
-}
+  );
+}  

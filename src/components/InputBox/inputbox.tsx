@@ -1,10 +1,5 @@
 import { ChangeEvent, KeyboardEvent, forwardRef } from 'react';
-<<<<<<< HEAD
 import './InputBox.css';
-=======
-import './Inputbox.css';
->>>>>>> 528a1d48eb31003b6fa830d815f01530db8623c9
-
 interface Props {
   title: string;
   placeholder: string;
