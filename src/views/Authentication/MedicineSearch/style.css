@@ -11,6 +11,13 @@
     gap: 10px;
 }
 
+.medicine-search-container {
+    width: 1320px;
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+}
+
 .medicine-search-background {
     margin-top: 90px;
     height: 488px;
