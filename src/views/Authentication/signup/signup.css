@@ -1,0 +1,32 @@
+#sign-up {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.sign-up-container {
+    width: 1320px;
+    display: flex; 
+    justify-content: center;
+    margin-top:90px;
+}
+
+.sign-up-box {
+    width: 507px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sign-up-text-box {
+    padding: 100px 0px 100px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sign-up-text {
+    font-size: 32px;
+    font-weight: 300;
+    color: #4D4D4D;
+}
+

@@ -1,0 +1,100 @@
+.primary-button-lg {
+  border-radius: 5px;
+  padding: 18px 40px 18px 40px;
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #C7BA9A;
+  color: #FCFCFC;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button-lg:hover {
+  opacity: 0.95;
+}
+
+.sign-button-lg {
+  border-radius: 5px;
+  padding: 18px 40px 18px 40px;
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F0F0F0;
+  color: #545454;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.sign-button-lg:hover {
+  background-color: #BBB9B6;
+  color: #FCFCFC;
+  transition : 0.5s;
+}
+
+
+.full-width {
+  width: 100%;
+}
+
+.kakao-sign-in-button {
+  border: 2px solid #F4F4F4;
+  border-radius: 30px;
+  padding: 16px 0px 16px 0px;
+  color: #464646;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 235px;
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.naver-sign-in-button {
+  border: 2px solid #F4F4F4;
+  border-radius: 30px;
+  padding: 16px 0px 16px 0px;
+  color: #41B273;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 235px;
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sns-text-box {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.sns-line {
+  border-bottom: 1px solid #F0F0F0;
+  width: 159px;
+  padding-top: 110px;
+  margin-bottom: 34px;
+}
+
+.sns-text {
+  font-size: 16px;
+  color: #8D8D8D;
+  padding-top: 100px;
+  font-weight: 600;
+}
+
+.sns-button-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom:133px;
+}

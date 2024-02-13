@@ -1,0 +1,116 @@
+.input-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-box-content {
+    display: flex;
+    flex-direction: column;
+    /* gap: 15px; */
+        /* gap: 40px; */
+    padding-bottom: 25px;
+}
+
+.input-box-content-login {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+.input-box-body {
+    display: flex;
+    gap: 20px;
+}
+
+.input-box-login-input {
+    flex: 1;
+    border: none;
+    border: 1px solid #F0F0F0;
+    border-radius: 5px;
+    padding: 20px 0px 20px 20px;
+    outline: none;
+    font-size: 16px;
+    font-weight: 400;
+    color: #4D4D4D;
+    font-family: 'pretendard';
+}
+
+.input-box-input::placeholder {
+    color:#8F8F8F;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.input-box-input {
+    flex: 1;
+    border: none;
+    border-bottom: 1px solid #F0F0F0;
+    padding: 0px 0px 20px 0px;
+    outline: none;
+    font-size: 16px;
+    font-weight: 400;
+    color: #4D4D4D;
+    font-family: 'pretendard';
+}
+
+.input-box-input::placeholder {
+    color:#8F8F8F;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.input-box-button {
+    display: flex;
+    justify-content: center; /*수평 중앙정렬*/
+    align-items: center; /*수직 중앙정렬*/
+    border-radius: 5px;
+    width: 137px;
+    height: 43px;
+    background-color: #BBB9B6;
+    color:#FCFCFC;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.input-box-button-disable {
+    display: flex;
+    justify-content: center; /*수평 중앙정렬*/
+    align-items: center; /*수직 중앙정렬*/
+    border-radius: 5px;
+    width: 137px;
+    height: 43px;
+    background-color: #F0F0F0;
+    color:#545454;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.input-box-button-disable:hover {
+    background-color: #BBB9B6;
+    color: #FCFCFC;
+    transition : 0.5s;
+}
+
+.input-box-message {
+    color: #C7BA9A;
+    font-size: 16px;
+    font-weight: 400;
+    padding-top: 15px;
+}
+
+.input-box-message-error {
+    color: #C79A9A;
+    font-size: 16px;
+    font-weight: 400;
+    padding-top: 15px;
+}
+
+.input-box-message-error-login {
+    color: #C79A9A;
+    font-size: 16px;
+    font-weight: 400;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}

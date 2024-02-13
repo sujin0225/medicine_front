@@ -1,0 +1,45 @@
+#footer {
+    min-width: 100%;
+    padding: 52px 0px 51px 0px;
+    background-color: #222222;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-container {
+    width: 1320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-top-box {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.footer-logo {
+    font-family: 'GmarketSansBold';
+    font-size: 24px;
+    color: #A6A6A6;
+}
+
+.footer-text-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-text {
+    font-size: 16px;
+    color: #858585;
+}
+
+.footer-bottom-box {
+    margin-top: 5px;
+}
+
+.footer-copyright {
+    font-size: 16px;
+    color: #858585;
+}
