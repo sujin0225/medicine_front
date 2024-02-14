@@ -5,22 +5,23 @@
 }
 
 .medicine-search-background-container {
-    width: 1320px;
+    width: 1295px;
     display: flex; 
     flex-direction: column;
     gap: 10px;
+    justify-content: center;
 }
 
 .medicine-search-container {
     width: 1320px;
     display: flex; 
     flex-wrap: wrap; 
-    justify-content: center; 
+    /* justify-content: center;  */
 }
 
 .medicine-search-background {
     margin-top: 90px;
-    height: 488px;
+    height: 450px;
     background-position: center;
     background-size: cover;
     background-attachment: fixed;
@@ -66,4 +67,39 @@
     font-weight: 400;
     color: #E2E2E2;
     z-index: 2;
+}
+
+.search-box {
+    display: flex;
+    gap: 5px;
+    padding-top: 70px;
+}
+
+.search-title-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #C7BA9A;
+}
+
+.search-title {
+    font-size: 20px;
+    font-weight: 400;
+    color: #4D4D4D;
+}
+
+.search-contents {
+    grid-column: 1 / 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.search-contents-nothing {
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #8D8D8D;
+    font-size: 20px;
+    font-weight: 400;
 }

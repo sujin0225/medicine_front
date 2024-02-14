@@ -1,5 +1,5 @@
 import './App.css';
-import Main from 'views/Authentication/Main';
+import Main from 'views/Main';
 import Container from 'layouts/container/container';
 import OAuth from 'views/Authentication/OAuth';
 import { ChangeEvent, useState } from 'react';
@@ -9,10 +9,12 @@ import SignIn from 'views/Authentication/signin/signin';
 import { SIGN_IN_PATH } from 'constant';
 import { SIGN_UP_PATH } from 'constant';
 import { MEDICINE_SEARCH_PATH } from 'constant';
+import { SEARCH_PATH } from 'constant';
 import { MAIN_PATH } from 'constant';
 import { useLoginUserStore } from 'stores';
 import { useEffect } from 'react';
-import MedicineSearch from 'views/Authentication/MedicineSearch';
+import MedicineSearch from 'views/MedicineSearch';
+import Search from 'views/Search';
 
 function App() {
 
@@ -28,6 +30,7 @@ function App() {
       <Route element={<Container />}>
         <Route path={MAIN_PATH()} element={<Main />} />
         <Route path={MEDICINE_SEARCH_PATH()} element={<MedicineSearch /> } />
+        <Route path={SEARCH_PATH(':searchWord')} element={<Search />} />
         <Route path={SIGN_IN_PATH()} element={<SignIn />} />
         <Route path={SIGN_UP_PATH()} element={<SignUp />} />
         <Route path='oauth-response/:token/:expirationTime' element={<OAuth/>} />

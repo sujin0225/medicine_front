@@ -17,7 +17,7 @@ export default function MedicineItem({ medicineListItem }: Props) {
             <div className='medicine-list-item-content'>{CLASS_NAME}</div>
             <div className='medicine-list-item-content-bottom'>{FORM_CODE_NAME}</div>
             <div className='medicine-list-item-content-bottom'>{ENTP_NAME}</div>
-            <div className='medicine-list-item-content-ETC'>{ETC_OTC_NAME}</div>
+            <div className={`medicine-list-item-content-${ETC_OTC_NAME === '일반의약품' ? 'ETC-Gold' : 'ETC-Red'}`}>{ETC_OTC_NAME}</div>
         </div>
     )
 }

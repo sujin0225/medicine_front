@@ -5,4 +5,6 @@ export default interface MedicineListItem {
     ENTP_NAME: string;
     ETC_OTC_NAME: string;
     FORM_CODE_NAME: string;
+    // items: string;
+    // totalCount: string;
 }

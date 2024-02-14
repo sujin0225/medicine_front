@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { MedicineListItem } from 'types/interface';
 import MedicineItem from 'components/MedicineItem/MedicineItem';
 import Pagination from 'components/Pagination/Pagination';
+import Search from 'components/Search/Search';
 
 export default function MedicineSearch() {
   const [medicineList, setMedicineList] = useState<MedicineListItem[]>([]);
@@ -13,6 +14,7 @@ export default function MedicineSearch() {
   useEffect(() => {
     fetchData(1); 
   }, []); 
+  
 
   const fetchData = async (pageNo: number) => {
     try {
@@ -32,6 +34,7 @@ export default function MedicineSearch() {
 
   return (
     <>
+    {/* 이미지부분 */}
       <div className='medicine-search-background'>
         <div id='medicine-search'>
           <div className='medicine-search-background-container'>
@@ -43,6 +46,9 @@ export default function MedicineSearch() {
           </div>
         </div>
       </div>
+      {/* 검색창 */}
+      <Search />
+      {/* 의약품 카드부분 */}
       <div id='medicine-search'>
         <div className='medicine-search-container'>
         <Pagination
@@ -60,7 +66,6 @@ export default function MedicineSearch() {
           totalPages={Math.ceil(totalCount / 16)} 
         />
         </div>
-        
       </div>
     </>
   );
