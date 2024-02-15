@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
-import '../MedicineSearch/style.css';
+import '../MedicineSearch/Main/style.css';
 import Search from 'components/Search/Search';
 import Pagination from 'components/Pagination/Pagination';
 import { MedicineListItem } from 'types/interface';
@@ -11,18 +11,12 @@ export default function SearchView() {
 
   //state: searchWord path variable
   const { searchWord } = useParams();
-  //state: 검색 게시물 개수 상태
-  const [count, setCount] = useState<number>(0);
   //state: 의약품 리스트 상태
   const [medicineList, setMedicineList] = useState<MedicineListItem[]>([]);
   //state: 페이지 변경 상태
   const [currentPage, setCurrentPage] = useState(1);
   //state: 전체 페이지 상태
   const [totalCount, setTotalCount] = useState(0);
-  //state: 검색어 상태
-  const [word, setWord] = useState<string>('');
-  //state: 검색 버튼 상태
-  const [status, setStatus] = useState<boolean>(false);
   
   useEffect(() => {
     fetchData(searchWord ?? ''); // searchWord가 undefined일 경우 ''으로 대체
@@ -41,7 +35,6 @@ export default function SearchView() {
   
   const handlePageChange = (newPageNo: number) => {
     setCurrentPage(newPageNo); // 페이지 번호 변경
-    // fetchData(newPageNo); // 변경된 페이지 번호로 데이터 다시 가져오기
   };
 
   if(!searchWord) return(<></>);

@@ -1,0 +1,93 @@
+#medicine-detail {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.medicine-detail-container {
+    width: 1100px;
+    display: flex; 
+    flex-direction: column;
+    margin-top: 90px
+}
+
+.medicine-detail-content-box {
+    margin-top: 60px;
+    margin-bottom: 100px;
+    display: flex; 
+}
+
+.medicine-detail-image {
+    border-radius: 27px;
+    width: 420px;
+    height: 230px;
+    background-size: 100% 100%;
+}
+
+.medicine-detail-content-etc {
+    font-size: 18px;
+    font-weight: 600;
+    color: #C69B94;
+    padding: 25px 0px 0px 40px;
+}
+
+.medicine-detail-content-name {
+    font-size: 26px;
+    font-weight: 600;
+    color: #4D4D4D;
+    padding: 30px 0px 0px 40px;
+}
+
+.medicine-detail-content-eng-name {
+    font-size: 20px;
+    font-weight: 400;
+    color: #8D8D8D;
+    padding: 6px 0px 0px 40px;
+}
+
+button {
+    border: none;
+}
+
+.bloc-tabs {
+    display: flex;
+}
+
+.tabs {
+    padding: 30px;
+    text-align: center;
+    width: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    border-bottom: 1px solid #EEEEEE;
+    box-sizing: content-box;
+    position: relative;
+    outline: none;
+    font-size: 20px;
+    font-weight: 600;
+    color: #959595;
+    font-family: 'Pretendard';
+}
+  
+.active-tabs  {
+    background: #ffffff;
+    border-bottom: 1px solid #C7BA9A;
+    font-family: 'Pretendard';
+    font-size: 20px;
+    font-weight: 600;
+    opacity : 1;
+    transition : 0.5s;
+    color: #C7BA9A;
+}
+
+.medicine-detail-tabs-box {
+    width: 1060px;
+    height: 1022px;
+}
+
+.medicine-detail-basics {
+    padding: 60px 70px ;
+    font-size: 20px;
+    font-weight: 600;
+    color: #5B5B5B;
+}
