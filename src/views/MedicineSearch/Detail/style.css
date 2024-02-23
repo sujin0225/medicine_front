@@ -95,6 +95,11 @@ button {
     display: flex;
 }
 
+.medicine-detail-basics-content-title-box {
+    display: flex;
+    flex-direction: column;
+}
+
 .medicine-detail-basics-content-box-main {
     
 }
@@ -172,4 +177,53 @@ button {
     position: relative;
     outline: none;
     margin: 0px 70px 0px 70px;
+}
+
+.accordion {
+    height: 1000px;
+    padding-top: 17px;
+}
+
+.accordion-item {
+    padding: 42px 0px 42px 0px;
+    border-bottom:1px solid #EEEEEE;
+    margin: 0px 70px 0px 70px;
+}  
+
+.accordion-title {
+    color:#5B5B5B;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.accordion-content {
+    color: #8b7f75;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0,1,0,1);
+    display: flex;
+}
+  
+.accordion-content.show{
+    height: auto;
+    max-height: 9999px;
+    transition: all 0.5s cubic-bezier(1,0,1,0);
+}
+
+.accordion-content-text {
+    color: #8D8D8D;
+    font-weight: 400;
+    font-size: 18px;
+    padding-top: 20px;
+}
+
+.accordion-content-titel-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #5B5B5B;
+    padding-top: 20px;
 }
