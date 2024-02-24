@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './Header.css'
 import { useNavigate, useParams } from 'react-router-dom'
 import { MAIN_PATH, SIGN_IN_PATH, SIGN_UP_PATH, USER_PATH, MEDICINE_SEARCH_PATH } from 'constant'
@@ -33,12 +33,6 @@ const onMedicineSearchClickHandler = () => {
     navigate(MEDICINE_SEARCH_PATH());
 };
 
-//component: 마이페이지 버튼 컴포넌트
-const MyPageButton = () => {
-
-//state: userEmail path variable 상태
-const { user_id } = useParams();
-
 //event handler: 마이페이지 버튼 클릭 이벤트 처리 함수
 const onMyPageButtonClickHandler = () => {
     if(!loginUser) return;
@@ -46,7 +40,7 @@ const onMyPageButtonClickHandler = () => {
     navigate(USER_PATH(user_id));
 };
 
-//event handler: 마이페이지 버튼 클릭 이벤트 처리
+//event handler: 로그아웃 버튼 클릭 이벤트 처리
 const onSignOutButtonClickHandler = () => {
     resetLoginUser();
     setCookies('accessToken', '', { path: MAIN_PATH(), expires: new Date() })
@@ -58,15 +52,13 @@ const onSignInButtonClickHandler = () => {
     navigate(SIGN_IN_PATH());
 };
 
-//render: 마이페이지 버튼 컴포넌트 렌더링
-if(isLogin && user_id === loginUser?.user_id)
-return <div className='header-user' onClick={onSignOutButtonClickHandler}>{'로그아웃'}</div>
-//render: 로그아웃 버튼 컴포넌트 렌더링
-if (isLogin)
-return <div className='header-user' onClick={onMyPageButtonClickHandler}>{'마이페이지'}</div>
-//render: 로그인 버튼 컴포넌트 렌더링
-return <div className='header-user' onClick={onSignInButtonClickHandler}>{'로그인'}</div>
-};
+useEffect(() => {
+    // 쿠키에 토큰이 있는지 확인
+    const accessToken = cookies.accessToken;
+    // 쿠키에 토큰이 있으면 로그인 상태를 true로 설정
+    setLogin(accessToken !== undefined && accessToken !== '');
+}, [cookies]);
+
 
   return (
     <div id='header'>
@@ -78,8 +70,18 @@ return <div className='header-user' onClick={onSignInButtonClickHandler}>{'로�
                 </div>
                 <div className='header-right-box'>
                     <div className='header-user-box'>
-                    <div className='header-user'><MyPageButton /></div>
-                    <div className='header-user' onClick={signupClickHandler}>{'회원가입'}</div>
+                    {isLogin && (
+            <>
+              <div className='header-user' onClick={onMyPageButtonClickHandler}>{'마이페이지'}</div>
+              <div className='header-user' onClick={onSignOutButtonClickHandler}>{'로그아웃'}</div>
+            </>
+          )}
+          {!isLogin && (
+            <>
+              <div className='header-user' onClick={onSignInButtonClickHandler}>{'로그인'}</div>
+              <div className='header-user' onClick={signupClickHandler}>{'회원가입'}</div>
+            </>
+                )}
                 </div>
             </div>
         </div>

@@ -17,6 +17,11 @@ const errorHandler = (error: any) => {
 const DOMAIN = 'http://localhost:5050';
 const API_DOMAIN = `${DOMAIN}`;
 
+//토큰
+const authorization = (accessToken: string) => { 
+    return { headers: { Authorization: `Bearer ${accessToken}` }} 
+};
+
 export const SNS_SIGN_IN_URL = (type: 'kakao' | 'naver') => `${API_DOMAIN}/auth/oauth2/${type}`;
 const ID_CHECK_URL = () => `${API_DOMAIN}/auth/id-check`;
 const EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/email-certification`;

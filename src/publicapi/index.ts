@@ -65,7 +65,6 @@ export const medicinepermission = async (ITEM_SEQ: string) => {
 };
 
 //의약품 복약 정보
-
 export const medicineinfo = async (ITEM_SEQ: string) => {
     try {
         const response = await axios.get(MEDICINE_INFO_URL(ITEM_SEQ));

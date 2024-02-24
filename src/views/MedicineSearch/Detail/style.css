@@ -227,3 +227,35 @@ button {
     color: #5B5B5B;
     padding-top: 20px;
 }
+
+.review-box {
+    display: flex; 
+    gap: 25px;
+    flex-direction: column;
+}
+
+.review-main-box {
+    padding-top: 30px;
+}
+
+.review-top-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-button {
+    width: 87px;
+    border: 2px solid #DDD5C2;
+    cursor: pointer;
+    background-color: transparent;
+    border-radius: 5px;
+    color: #DDD5C2;
+    padding: 12px 15px 11px 15px;
+}
+  
+.review-button:hover{
+    background-color: #DDD5C2;
+    color: #FEFEFE;
+    transition : 0.5s;
+}  
+  
