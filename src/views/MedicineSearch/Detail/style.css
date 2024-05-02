@@ -236,11 +236,13 @@ button {
 
 .review-main-box {
     padding-top: 30px;
+    display: flex;
+    flex-direction: column;
 }
 
 .review-top-box {
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
 }
 
 .review-button {
@@ -253,9 +255,31 @@ button {
     padding: 12px 15px 11px 15px;
 }
   
-.review-button:hover{
+.review-button:hover {
     background-color: #DDD5C2;
     color: #FEFEFE;
     transition : 0.5s;
 }  
-  
+
+.review-number {
+    color: #C6C6C6;
+    font-weight: 500;
+    font-size: 16px;
+    float: right;
+}
+
+.review-number-number {
+    color: #C7BA9A;
+    font-weight: 600;
+    font-size: 16px;
+    float: right;
+    margin-left: 3px;
+}
+
+.review-content-number-box {
+    padding-top: 35px;
+}
+
+.review-height-container {
+    height: 1800px;
+}

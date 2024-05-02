@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import './style.css'
 import { medicineDetail } from 'publicapi';
 import { medicinepermission } from 'publicapi';
-import { MedicineListItem } from 'types/interface';
-import { medicinepermissionList } from 'types/interface';
+import { MedicineListItem, medicinepermissionList, ReviewListItem } from 'types/interface';
 import { MedicineinfoItem } from 'types/interface';
 import { medicineinfo } from 'publicapi';
+import { GetReviewListRequest } from 'apis'
+import { ResponseDto } from 'apis/response';
+import { GetReviewListResponseDto } from 'apis/response/review';
+import ReviewItem from 'components/ReviewItem';
+import { MAIN_PATH } from 'constant';
+import Pagination from 'components/Pagination/Pagination';
 
 export default function MedicineDetail() {
   const [toggleState, setToggleState] = useState(1);
-  const { ITEM_SEQ, ITEM_NAME } = useParams();
+  const { ITEM_SEQ } = useParams();
   const [medicineList, setMedicineList] = useState<MedicineListItem[]>([]);
   const [medicinepermissionList, setMedicinepermissionList] = useState<medicinepermissionList[]>([]);
   const [medicineinfoList, setMedicineinfoList] = useState<MedicineinfoItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   //리뷰 작성하기 버튼 상태
   const [isReview, setReview] = useState<boolean>(false);
+  //state: 전체 댓글 개수 상태
+  const [totalReviewCount, setTotalReviewCount] = useState<number>(0);
+  //리뷰 리스트 상태
+  const [ReviewList, setReviewList] = useState<ReviewListItem[]>([]);
 
   const toggleTab = (index: number) => {
       setToggleState(index);
@@ -24,6 +33,12 @@ export default function MedicineDetail() {
 
   //아코디언 toggle
   const [selected, setSelected] = useState<number | null>(null);
+
+  //네비게이트
+  const navigate = useNavigate();
+
+  //state: 페이지 변경 상태
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggle = (i: number) => {
     if (selected === i) {
@@ -79,6 +94,30 @@ const fetchDatainfo = async (ITEM_SEQ: string) => {
         console.error('데이터 불러오기 에러:', error);
     }
 };
+
+//리뷰글
+const getReviewListResponse = (responseBody: GetReviewListResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    if(code !== 'SU') return;
+    
+    const { reviewListItems } = responseBody as GetReviewListResponseDto;
+    setReviewList(reviewListItems);
+    setTotalReviewCount(reviewListItems.length);
+}
+
+//effect: 게시물 번호 path variable이 바뀔때 마다 리뷰글 불러오기
+useEffect(() => {
+    if(!ITEM_SEQ) return;
+    GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
+  }, [ITEM_SEQ]);
+
+
+  const handlePageChange = (newPageNo: number) => {
+    setCurrentPage(newPageNo); // 페이지 번호 변경
+    // fetchData(newPageNo); // 변경된 페이지 번호로 데이터 다시 가져오기
+  };
 
 const accordion = [
     {
@@ -530,6 +569,7 @@ const accordion = [
     </div>
         </div>}
             {toggleState === 5 && <div className="content active-content">
+                <div className='review-height-container'>
                 <div className='medicine-detail-tabs-box'>
                     <div className='review-main-box'>
                         <div className='review-top-box'>
@@ -537,7 +577,24 @@ const accordion = [
                             <div className='review-button'>리뷰 작성하기</div>
                                 </div>
                             </div>
+                            <div className='review-content-number-box'>
+                                <div className='review-number'>리뷰
+                                    <div className='review-number-number'>{`${totalReviewCount}`}</div>
+                                </div>
                             </div>
+                                {/* <div className='review-content'>{ReviewList.map(item => <ReviewItem reviewListItem={item} />)}</div> */}
+                                <Pagination
+                                    render={() => (
+                                    ReviewList.slice((currentPage-1)*6, currentPage*6).map((reviewListItem, index) => (
+                                    <ReviewItem key={index} reviewListItem={reviewListItem} />
+                                    ))
+                                    )}
+                                    onPageChange={handlePageChange}
+                                    currentPage={currentPage} 
+                                    totalPages={Math.ceil(totalReviewCount / 6)}
+                                    />
+                            </div>
+                        </div>
                         </div>
                     </div>}
               </div>
