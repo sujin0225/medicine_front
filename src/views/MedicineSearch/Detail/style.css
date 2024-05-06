@@ -82,11 +82,13 @@ button {
 
 .medicine-detail-tabs-box {
     /* width: 1060px; */
-    height: 1022px;
+    /* height: 1022px; */
+    padding-bottom: 133px;
 }
 
 .medicine-detail-tabs-box-info {
-    height: 1903px;
+    /* height: 1903px; */
+    padding-bottom: 133px;
 }
 
 .medicine-detail-basics-content-box {
@@ -261,6 +263,21 @@ button {
     transition : 0.5s;
 }  
 
+.review-button-click {
+    width: 87px;
+    border: 2px solid #DDD5C2;
+    cursor: pointer;
+    background-color: transparent;
+    border-radius: 5px;
+    background-color: #DDD5C2;
+    color: #FEFEFE;
+    padding: 12px 15px 11px 15px;
+}
+
+.review-button-click:hover {
+    opacity: 0.95;
+}
+
 .review-number {
     color: #C6C6C6;
     font-weight: 500;
@@ -277,9 +294,75 @@ button {
 }
 
 .review-content-number-box {
-    padding-top: 35px;
+    padding: 35px 0px 15px 0px;
 }
 
 .review-height-container {
-    height: 1800px;
+    /* height: 1800px; */
+    padding-bottom: 133px;
+}
+
+.review-input-box {
+    border: 2px solid #E0E0E0;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 22px;
+}
+
+.review-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-textarea {
+    border: none;
+    outline: none;
+    background: none;
+    resize: none;
+    overflow: hidden;
+    color: #8D8D8D;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 150%;
+    font-family: 'Pretendard';
+}
+
+.review-button-box {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.disable-button {
+    border-radius: 46px;
+    width: 95px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #DDD5C2;
+    color: #FEFEFE;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+    cursor: not-allowed;
+}
+
+.black-button {
+    border-radius: 46px;
+    width: 98px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #C7BA9A;
+    color: #FEFEFE;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+    cursor: pointer;
+}
+
+.black-button:hover {
+    background-color: #C7BA9A;
 }

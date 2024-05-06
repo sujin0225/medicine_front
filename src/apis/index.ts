@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import { GetReviewListResponseDto } from "./response/review"
+import { GetReviewListResponseDto, PostReviewResponseDto } from "./response/review"
+import { PostReviewRequestDto } from "./request/review"
 import { ResponseDto } from "./response";
 import { error } from "console";
 
@@ -31,6 +32,7 @@ const CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/check-certification`;
 const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 const GET_REVIEW_LIST_URL = (ITEM_SEQ: number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`
+const POST_REVIEW_URL = (ITEM_SEQ : number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`
 
 //아이디 중복 체크
 export const idCheckRequest = async (requestBody: idCheckRequestDto) => {
@@ -85,4 +87,21 @@ export const GetReviewListRequest = async(ITEM_SEQ: number | string) => {
             return responseBody;
         })
         return result;
+}
+
+//리뷰 글 작성
+export const postReviewRequest = async (ITEM_SEQ: number | string, requestBody: PostReviewRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_REVIEW_URL(ITEM_SEQ), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PostReviewResponseDto = response.data;
+            console.log("Review posted successfully:", responseBody);
+            return responseBody;
+        })
+        .catch(error => {
+            console.error("Review submission error:", error);
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;    
 }

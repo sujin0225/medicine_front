@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState, useRef } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import './style.css'
 import { medicineDetail } from 'publicapi';
@@ -6,12 +6,16 @@ import { medicinepermission } from 'publicapi';
 import { MedicineListItem, medicinepermissionList, ReviewListItem } from 'types/interface';
 import { MedicineinfoItem } from 'types/interface';
 import { medicineinfo } from 'publicapi';
-import { GetReviewListRequest } from 'apis'
+import { GetReviewListRequest, postReviewRequest } from 'apis'
 import { ResponseDto } from 'apis/response';
 import { GetReviewListResponseDto } from 'apis/response/review';
 import ReviewItem from 'components/ReviewItem';
 import { MAIN_PATH } from 'constant';
 import Pagination from 'components/Pagination/Pagination';
+import { useLoginUserStore } from 'stores';
+import { useCookies } from 'react-cookie';
+import { PostReviewResponseDto } from 'apis/response/review';
+import { PostReviewRequestDto } from 'apis/request/review';
 
 export default function MedicineDetail() {
   const [toggleState, setToggleState] = useState(1);
@@ -21,11 +25,27 @@ export default function MedicineDetail() {
   const [medicineinfoList, setMedicineinfoList] = useState<MedicineinfoItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   //리뷰 작성하기 버튼 상태
-  const [isReview, setReview] = useState<boolean>(false);
+  const [isReview, setIsReview] = useState<boolean>(false);
   //state: 전체 댓글 개수 상태
   const [totalReviewCount, setTotalReviewCount] = useState<number>(0);
   //리뷰 리스트 상태
   const [ReviewList, setReviewList] = useState<ReviewListItem[]>([]);
+  //state: 페이지 변경 상태
+  const [currentPage, setCurrentPage] = useState(1);
+  //리뷰 작성하기 버튼 클릭 상태
+  const [showReview, setShowReview] = useState<boolean>(false);
+  //리뷰 작성 상태
+  const [review, setReview] = useState<string>('');
+  //리뷰 별점 상태
+  const [starRating, setStarRating] = useState<number>(5);
+  //리뷰 이미지 상태
+  const [imageList, setImageList] = useState<string[]>([]);
+  //리뷰 textarea 참조 상태
+  const reviewRef = useRef<HTMLTextAreaElement | null>(null);
+  //로그인 유저 상태
+  const { loginUser } = useLoginUserStore();
+  //쿠키 상태
+  const[cookies, setCookies] = useCookies();
 
   const toggleTab = (index: number) => {
       setToggleState(index);
@@ -36,9 +56,6 @@ export default function MedicineDetail() {
 
   //네비게이트
   const navigate = useNavigate();
-
-  //state: 페이지 변경 상태
-  const [currentPage, setCurrentPage] = useState(1);
 
   const toggle = (i: number) => {
     if (selected === i) {
@@ -95,7 +112,7 @@ const fetchDatainfo = async (ITEM_SEQ: string) => {
     }
 };
 
-//리뷰글
+//리뷰 글 불러오기(Get)
 const getReviewListResponse = (responseBody: GetReviewListResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
     const { code } = responseBody;
@@ -106,6 +123,19 @@ const getReviewListResponse = (responseBody: GetReviewListResponseDto | Response
     setReviewList(reviewListItems);
     setTotalReviewCount(reviewListItems.length);
 }
+
+//리뷰 글 작성(Post)
+  const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    // if(code === 'VF') alert('잘못된 접근입니다.');
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    if(code !== 'SU') return;
+
+    setReview('');
+    if(!ITEM_SEQ) return;
+    GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
+  }
 
 //effect: 게시물 번호 path variable이 바뀔때 마다 리뷰글 불러오기
 useEffect(() => {
@@ -118,6 +148,34 @@ useEffect(() => {
     setCurrentPage(newPageNo); // 페이지 번호 변경
     // fetchData(newPageNo); // 변경된 페이지 번호로 데이터 다시 가져오기
   };
+
+  //리뷰 작성하기 버튼 클릭 이벤트 처리
+  const onShowReviewClickHandler = () => {
+    setShowReview(!showReview);
+  }
+
+  //리뷰 작성 버튼 클릭 이벤트 처리
+  const onReviewSubmitButtonClickHandler = () => {
+    console.log("리뷰 작성 버튼 클릭");
+    if(!review)
+        alert('내용을 입력해주세요!');
+    if(!ITEM_SEQ) return;
+    if(!cookies.accessToken) 
+    alert('로그인 해주세요!');
+
+    const requestBody: PostReviewRequestDto = { content: review, starRating: starRating, reviewImageList: imageList };
+    console.log("Sending review:", requestBody);
+    postReviewRequest(ITEM_SEQ, requestBody, cookies.accessToken).then(postReviewResponse);
+  }
+
+  //리뷰 변경 이벤트 처리
+  const onReviewChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = event.target;
+    setReview(value);
+    if(!reviewRef.current) return;
+    reviewRef.current.style.height = 'auto';
+    reviewRef.current.style.height = `${reviewRef.current.scrollHeight}px`;
+  }
 
 const accordion = [
     {
@@ -574,9 +632,25 @@ const accordion = [
                     <div className='review-main-box'>
                         <div className='review-top-box'>
                             <div className='review-box'>
-                            <div className='review-button'>리뷰 작성하기</div>
-                                </div>
-                            </div>
+                                <div className='button' onClick={onShowReviewClickHandler}>
+                                    {
+                                        showReview ? <div className='review-button-click'>리뷰 작성하기</div> : <div className='review-button'>리뷰 작성하기</div>
+                                    }
+                                    </div>
+                                        </div>
+                                    </div>
+                                    {
+                                    // loginUser !== null && 
+                                        showReview &&
+                                        <div className='review-input-box'>
+                                            <div className='review-input-container'>
+                                                <textarea className='review-textarea' placeholder='리뷰를 작성해보세요.' onChange={onReviewChangeHandler} ref={reviewRef} value={review}/>
+                                                <div className='review-button-box'>
+                                                <div className={review === '' ? 'disable-button' : 'black-button'} onClick={onReviewSubmitButtonClickHandler}>{'작성하기'}</div>
+                                                </div>
+                                            </div>
+                                        </div>    
+                                    }
                             <div className='review-content-number-box'>
                                 <div className='review-number'>리뷰
                                     <div className='review-number-number'>{`${totalReviewCount}`}</div>
