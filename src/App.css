@@ -98,3 +98,11 @@
   gap: 10px;
   padding-bottom:133px;
 }
+
+.camera-icon {
+  background-image: url(assets/image/camera.png);
+}
+
+.close-icon {
+  background-image: url(assets/image/close-button.png);
+}

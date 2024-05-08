@@ -51,3 +51,11 @@
     font-size: 18px;
     padding-top: 10px;
 }
+
+.review-image {
+    width: 220px;
+    height: 147px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 25px;
+}

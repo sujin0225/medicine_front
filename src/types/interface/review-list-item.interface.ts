@@ -5,4 +5,5 @@ export default interface ReviewListItem {
     content: string;
     writeDatetime: string;
     starRating: number;
+    reviewImageList: string[];
 }

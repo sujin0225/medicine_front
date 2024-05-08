@@ -6,13 +6,13 @@ import { medicinepermission } from 'publicapi';
 import { MedicineListItem, medicinepermissionList, ReviewListItem } from 'types/interface';
 import { MedicineinfoItem } from 'types/interface';
 import { medicineinfo } from 'publicapi';
-import { GetReviewListRequest, postReviewRequest } from 'apis'
+import { GetReviewListRequest, postReviewRequest, fileuploadRequest } from 'apis'
 import { ResponseDto } from 'apis/response';
 import { GetReviewListResponseDto } from 'apis/response/review';
 import ReviewItem from 'components/ReviewItem';
 import { MAIN_PATH } from 'constant';
 import Pagination from 'components/Pagination/Pagination';
-import { useLoginUserStore } from 'stores';
+import { useLoginUserStore, useReviewStore } from 'stores';
 import { useCookies } from 'react-cookie';
 import { PostReviewResponseDto } from 'apis/response/review';
 import { PostReviewRequestDto } from 'apis/request/review';
@@ -38,14 +38,18 @@ export default function MedicineDetail() {
   const [review, setReview] = useState<string>('');
   //리뷰 별점 상태
   const [starRating, setStarRating] = useState<number>(5);
-  //리뷰 이미지 상태
-  const [imageList, setImageList] = useState<string[]>([]);
   //리뷰 textarea 참조 상태
   const reviewRef = useRef<HTMLTextAreaElement | null>(null);
   //로그인 유저 상태
   const { loginUser } = useLoginUserStore();
   //쿠키 상태
   const[cookies, setCookies] = useCookies();
+  //이미지 입력 요소 참조 상태
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  //게시물 이미지 미리보기 URL 상태
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  //게시물 이미지 리스트
+  const { reviewImageFileList, setReviewImageFileList } = useReviewStore();
 
   const toggleTab = (index: number) => {
       setToggleState(index);
@@ -155,17 +159,36 @@ useEffect(() => {
   }
 
   //리뷰 작성 버튼 클릭 이벤트 처리
-  const onReviewSubmitButtonClickHandler = () => {
+  const onReviewSubmitButtonClickHandler = async () => {
+    const accessToken = cookies.accessToken;
     console.log("리뷰 작성 버튼 클릭");
-    if(!review)
-        alert('내용을 입력해주세요!');
+    if(!review) {
+      alert('내용을 입력해주세요!');
+      return; 
+    }
     if(!ITEM_SEQ) return;
-    if(!cookies.accessToken) 
-    alert('로그인 해주세요!');
-
-    const requestBody: PostReviewRequestDto = { content: review, starRating: starRating, reviewImageList: imageList };
-    console.log("Sending review:", requestBody);
-    postReviewRequest(ITEM_SEQ, requestBody, cookies.accessToken).then(postReviewResponse);
+    if(!accessToken) {
+      alert('로그인 해주세요!');
+      return;
+    }
+  
+    const reviewImageList: string[] = [];
+    for(const file of reviewImageFileList) {
+        const data = new FormData();
+        data.append('file', file);
+  
+        const url = await fileuploadRequest(data);
+        if(url) reviewImageList.push(url);
+    }
+  
+    const requestBody: PostReviewRequestDto = { content: review, starRating: starRating, reviewImageList: reviewImageList };
+  
+    console.log("리뷰:", requestBody);
+  
+    if(accessToken) {
+      alert('리뷰 작성이 완료되었습니다!')
+      postReviewRequest(ITEM_SEQ, requestBody, accessToken).then(postReviewResponse);
+    }
   }
 
   //리뷰 변경 이벤트 처리
@@ -175,6 +198,41 @@ useEffect(() => {
     if(!reviewRef.current) return;
     reviewRef.current.style.height = 'auto';
     reviewRef.current.style.height = `${reviewRef.current.scrollHeight}px`;
+  }
+
+
+  //이미지 업로드 버튼 클릭 이벤트 처리
+  const onImageUploadButtonClickHandler = () => {
+    if(!imageInputRef.current) return;
+    imageInputRef.current.click();
+  } 
+  
+//이미지 변경 이벤트 처리
+const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    if(!event.target.files || !event.target.files.length) return;
+    const file = event.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    const newImageUrls = imageUrls.map(item => item);
+    newImageUrls.push(imageUrl);
+    setImageUrls(newImageUrls);
+    const newBoardImageFileList = reviewImageFileList.map(item => item);
+    newBoardImageFileList.push(file);
+    setReviewImageFileList(newBoardImageFileList);
+
+    if(!imageInputRef.current) return;
+    imageInputRef.current.value = '';
+  }  
+
+  //event handler: 이미지 닫기 버튼 클릭 이벤트 처리
+  const onImageCloseButtonClickHandler = (deleteIndex: number) => {
+    if(!imageInputRef.current) return;
+    imageInputRef.current.value = '';
+
+    const newImageUrls = imageUrls.filter((url, index) => index !== deleteIndex);
+    setImageUrls(newImageUrls);
+
+    const newBoardImageFileList = reviewImageFileList.filter((file, index) => index !== deleteIndex);
+    setReviewImageFileList(newBoardImageFileList);
   }
 
 const accordion = [
@@ -640,14 +698,27 @@ const accordion = [
                                         </div>
                                     </div>
                                     {
-                                    // loginUser !== null && 
                                         showReview &&
                                         <div className='review-input-box'>
                                             <div className='review-input-container'>
-                                                <textarea className='review-textarea' placeholder='리뷰를 작성해보세요.' onChange={onReviewChangeHandler} ref={reviewRef} value={review}/>
-                                                <div className='review-button-box'>
-                                                <div className={review === '' ? 'disable-button' : 'black-button'} onClick={onReviewSubmitButtonClickHandler}>{'작성하기'}</div>
+                                                <div className='board-write-content-box'>
+                                                    <textarea className='review-textarea' placeholder='리뷰를 작성해보세요.' onChange={onReviewChangeHandler} ref={reviewRef} value={review}/>
+                                                    <div className='icon camera-icon' onClick={onImageUploadButtonClickHandler}></div>
+                                                    <input ref={imageInputRef} type='file' accept='image/*' style={{ display: 'none' }} onChange={onImageChangeHandler}/>
+                                                    </div>
                                                 </div>
+                                                <div className='board-write-images-box'>
+                                                    {imageUrls.map((imageUrl, index) => 
+                                                        <div className='review-write-image-box'>
+                                                        <img className='board-write-image' src={imageUrl}/>
+                                                        <div className='image-close' onClick={() => onImageCloseButtonClickHandler(index)}>
+                                                        <div className='icon close-icon'></div>
+                                                    </div>
+                                                </div>
+                                                )}
+                                            </div>
+                                                <div className='review-button-box'>
+                                                <div className={review === '' ? 'disable-button' : 'brown-button'} onClick={onReviewSubmitButtonClickHandler}>{'작성하기'}</div>
                                             </div>
                                         </div>    
                                     }

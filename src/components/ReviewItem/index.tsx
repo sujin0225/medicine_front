@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function ReviewItem({reviewListItem}: Props) {
-    const { reviewNumber, userId, itemSeq, content, writeDatetime, starRating } = reviewListItem;
+    const { reviewNumber, userId, itemSeq, content, writeDatetime, starRating, reviewImageList } = reviewListItem;
 
 return (
     <div className='review-list-item'>
@@ -17,6 +17,7 @@ return (
                 <div className='review-rating'>{starRating}점</div>
                 <div className='review-content-id'>{userId} | <div className='review-date'>{writeDatetime}</div></div>
                 <div className='review-content'>{content}</div>
+                {reviewImageList.map(image => <img className='review-image' src={image} />)}
             </div>
         </div>
     </div>

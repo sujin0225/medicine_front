@@ -33,6 +33,9 @@ const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 const GET_REVIEW_LIST_URL = (ITEM_SEQ: number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`
 const POST_REVIEW_URL = (ITEM_SEQ : number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`
+const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
+const FILE_DOMAIN = `${DOMAIN}/file`;
+
 
 //아이디 중복 체크
 export const idCheckRequest = async (requestBody: idCheckRequestDto) => {
@@ -105,3 +108,18 @@ export const postReviewRequest = async (ITEM_SEQ: number | string, requestBody: 
         });
     return result;    
 }
+
+//이미지 업로드
+export const fileuploadRequest = async(data: FormData) => {
+    const result = await axios.post(FILE_UPLOAD_URL(), data)
+        .then(response => {
+            const responseBody: string = response.data;
+            console.log("이미지 업로드 성공:", responseBody);
+            return responseBody;
+        })
+        .catch(error => {
+            console.error("File upload error:", error);
+            return null;
+        })
+        return result;
+    }
