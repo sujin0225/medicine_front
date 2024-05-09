@@ -16,6 +16,7 @@ import { useLoginUserStore, useReviewStore } from 'stores';
 import { useCookies } from 'react-cookie';
 import { PostReviewResponseDto } from 'apis/response/review';
 import { PostReviewRequestDto } from 'apis/request/review';
+import Rating from "components/Rating/Rating";
 
 export default function MedicineDetail() {
   const [toggleState, setToggleState] = useState(1);
@@ -129,17 +130,26 @@ const getReviewListResponse = (responseBody: GetReviewListResponseDto | Response
 }
 
 //리뷰 글 작성(Post)
-  const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | null) => {
+const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
     const { code } = responseBody;
+    
     // if(code === 'VF') alert('잘못된 접근입니다.');
     if(code === 'DBE') alert('데이터베이스 오류입니다.');
     if(code !== 'SU') return;
-
-    setReview('');
+  
+    // 리뷰 저장 성공 후 상태 초기화
+    setReview(''); // 리뷰 내용 초기화
+    setStarRating(5); // 별점 초기화
+    setReviewImageFileList([]); // 이미지 목록 초기화
+    setImageUrls([]);
+    setReviewList([]); // 리뷰 목록 초기화 (필요한 경우)
+  
+    // 리뷰 목록 새로고침
     if(!ITEM_SEQ) return;
     GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
   }
+  
 
 //effect: 게시물 번호 path variable이 바뀔때 마다 리뷰글 불러오기
 useEffect(() => {
@@ -678,7 +688,7 @@ const accordion = [
                     <span>{selected === i ? '-' : '+'}</span>
                 </div>
             <div className={selected === i ? 'accordion-content show' : 'accordion-content'}>
-            {selected === i && item.answer} {/* 선택된 아이템일 때만 내용을 표시 */}
+            {selected === i && item.answer}
           </div>
         </div>
       ))}
@@ -699,6 +709,15 @@ const accordion = [
                                     </div>
                                     {
                                         showReview &&
+                                        <div className='showreview'>
+                                            <div className='rating-gap'>
+                                            <Rating
+                                            count={5}
+                                            value={starRating} 
+                                            onChange={(value) => setStarRating(value)}
+                                            /> 
+                                        <div className='rating-number'>{starRating}</div>
+                                        </div>
                                         <div className='review-input-box'>
                                             <div className='review-input-container'>
                                                 <div className='board-write-content-box'>
@@ -720,14 +739,14 @@ const accordion = [
                                                 <div className='review-button-box'>
                                                 <div className={review === '' ? 'disable-button' : 'brown-button'} onClick={onReviewSubmitButtonClickHandler}>{'작성하기'}</div>
                                             </div>
-                                        </div>    
+                                        </div>   
+                                    </div> 
                                     }
                             <div className='review-content-number-box'>
                                 <div className='review-number'>리뷰
                                     <div className='review-number-number'>{`${totalReviewCount}`}</div>
                                 </div>
                             </div>
-                                {/* <div className='review-content'>{ReviewList.map(item => <ReviewItem reviewListItem={item} />)}</div> */}
                                 <Pagination
                                     render={() => (
                                     ReviewList.slice((currentPage-1)*6, currentPage*6).map((reviewListItem, index) => (
