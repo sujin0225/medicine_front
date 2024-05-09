@@ -107,3 +107,10 @@
   background-image: url(assets/image/close-button.png);
 }
 
+.star-full {
+  background-image: url(assets/image/star-full.png);
+}
+
+.star-empty {
+  background-image: url(assets/image/star-empty.png);
+}

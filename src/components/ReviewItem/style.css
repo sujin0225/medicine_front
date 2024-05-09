@@ -16,14 +16,22 @@
 }
 
 .review-content-id {
+    display: flex; /* flex 속성 적용 */
+    justify-content: space-between; /* 요소들 사이 공간 동등 배분 */
+    align-items: center; /* 수직 방향 가운데 정렬 */
     color: #A7A6A6;
     font-weight: 400;
     font-size: 16px;
-    padding-right: 8px;
+}
+
+.review-date {
+    color: #C6C6C6;
+    font-weight: 400;
+    font-size: 16px;
+    margin-left: 8px;
 }
 
 .review-line {
-    /* padding-top: 15px; */
     background: #ffffff;
     border-bottom: 1px solid #EEEEEE;
     box-sizing: content-box;
@@ -32,17 +40,18 @@
 }
 
 .review-rating {
-    padding-bottom: 8px;
-    color: #4D4D4D;
-    font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-bottom: 10px;
 }
 
-.review-date {
-    color: #C6C6C6;
-    font-weight: 400;
+.review-rating-number {
+    color: #4D4D4D;
+    font-weight: 500;
     font-size: 16px;
-    float: right;
-    padding-left: 8px;
+    margin-left: 5px;
+    margin-top: 2px;
 }
 
 .review-content {
@@ -59,3 +68,10 @@
     border-radius: 10px;
     margin-top: 25px;
 }
+
+.star {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    display: inline-block;
+  }
