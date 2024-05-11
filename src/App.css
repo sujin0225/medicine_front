@@ -114,3 +114,7 @@
 .star-empty {
   background-image: url(assets/image/star-empty.png);
 }
+
+.icon-button {
+  background-image: url(assets/image/more.png);
+}

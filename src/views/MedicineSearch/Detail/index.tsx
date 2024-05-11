@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
 import './style.css'
 import { medicineDetail } from 'publicapi';
 import { medicinepermission } from 'publicapi';
@@ -51,6 +51,7 @@ export default function MedicineDetail() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   //게시물 이미지 리스트
   const { reviewImageFileList, setReviewImageFileList } = useReviewStore();
+  const location = useLocation();
 
   const toggleTab = (index: number) => {
       setToggleState(index);
@@ -244,6 +245,11 @@ const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const newBoardImageFileList = reviewImageFileList.filter((file, index) => index !== deleteIndex);
     setReviewImageFileList(newBoardImageFileList);
   }
+
+  const refreshReviews = () => {
+    if(!ITEM_SEQ) return;
+    GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
+  };
 
 const accordion = [
     {
@@ -750,7 +756,7 @@ const accordion = [
                                 <Pagination
                                     render={() => (
                                     ReviewList.slice((currentPage-1)*6, currentPage*6).map((reviewListItem, index) => (
-                                    <ReviewItem key={index} reviewListItem={reviewListItem} />
+                                    <ReviewItem key={index} reviewListItem={reviewListItem} onDeleteSuccess={refreshReviews}/>
                                     ))
                                     )}
                                     onPageChange={handlePageChange}

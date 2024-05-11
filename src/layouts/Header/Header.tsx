@@ -15,7 +15,7 @@ const [cookies, setCookies] = useCookies();
 //state: 로그인 유저 상태
 const { loginUser, setLoginUser, resetLoginUser } = useLoginUserStore();
 
-    //function: 네비게이트 함수
+//function: 네비게이트 함수
 const navigate = useNavigate();
 
 //event handler: 로고 클릭 이벤트 처리 함수 
@@ -36,8 +36,8 @@ const onMedicineSearchClickHandler = () => {
 //event handler: 마이페이지 버튼 클릭 이벤트 처리 함수
 const onMyPageButtonClickHandler = () => {
     if(!loginUser) return;
-    const { user_id } = loginUser;
-    navigate(USER_PATH(user_id));
+    const { userId } = loginUser;
+    navigate(USER_PATH(userId));
 };
 
 //event handler: 로그아웃 버튼 클릭 이벤트 처리
@@ -52,6 +52,7 @@ const onSignInButtonClickHandler = () => {
     navigate(SIGN_IN_PATH());
 };
 
+//토큰 상태
 useEffect(() => {
     // 쿠키에 토큰이 있는지 확인
     const accessToken = cookies.accessToken;
@@ -59,6 +60,12 @@ useEffect(() => {
     setLogin(accessToken !== undefined && accessToken !== '');
 }, [cookies]);
 
+//로그인 유저 상태
+useEffect(() => {
+    setLogin(loginUser !== null);
+    console.log('loginUser 상태:', loginUser);
+    console.log('로그인 여부:', loginUser !== null);
+}, [loginUser])
 
   return (
     <div id='header'>

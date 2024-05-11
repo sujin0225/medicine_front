@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import { GetReviewListResponseDto, PostReviewResponseDto } from "./response/review"
+import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto } from "./response/review"
+import { GetSignInUserResponseDto } from "./response/user"
 import { PostReviewRequestDto } from "./request/review"
 import { ResponseDto } from "./response";
 import { error } from "console";
@@ -31,9 +32,11 @@ const EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/email-certification`;
 const CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/check-certification`;
 const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
-const GET_REVIEW_LIST_URL = (ITEM_SEQ: number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`
-const POST_REVIEW_URL = (ITEM_SEQ : number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`
+const GET_REVIEW_LIST_URL = (ITEM_SEQ: number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`;
+const POST_REVIEW_URL = (ITEM_SEQ : number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`;
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
+const DELETE_REVIEW_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/${reviewNumber}`;
+const GET_SIGN_IN_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 
@@ -123,3 +126,33 @@ export const fileuploadRequest = async(data: FormData) => {
         })
         return result;
     }
+
+//리뷰 삭제
+export const deleteReviewRequest = async (reviewNumber: number | string, accessToken: string) => {
+    const result = await axios.delete(DELETE_REVIEW_URL(reviewNumber), authorization(accessToken))
+        .then(response => {
+            const responseBody: DeleteReviewResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+}
+
+//로그인 유저 정보
+export const getSignInUserRequest = async (userId:string, accessToken: string) => {
+    const result = await axios.get(GET_SIGN_IN_USER_URL(userId), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetSignInUserResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+        return result;
+}

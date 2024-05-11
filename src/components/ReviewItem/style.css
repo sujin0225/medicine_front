@@ -75,3 +75,21 @@
     background-size: cover;
     display: inline-block;
   }
+
+.board-detail-delete-button {
+    width: 143px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 0, 0, 0.5);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.board-detail-delete-button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+  
