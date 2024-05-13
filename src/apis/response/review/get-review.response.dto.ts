@@ -1,6 +1,6 @@
-import { ReviewListItem } from 'types/interface';
-import ResponseDto from "../response.dto";
+import { Review } from 'types/interface';
+import ResponseDto from '../response.dto';
 
-export default interface GetReviewListResponseDto extends ResponseDto {
-    reviewListItems: ReviewListItem[];
+export default interface GetReviewResponseDto extends ResponseDto, Review {
+
 }

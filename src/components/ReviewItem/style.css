@@ -5,8 +5,8 @@
 }
 
 .review-list-item-top {
-    display: flex;
-    align-items: center;
+    /* display: flex; */
+    /* align-items: center; */
     /* gap: 8px; */
 }
 
@@ -16,8 +16,7 @@
 }
 
 .review-content-id {
-    display: flex; /* flex 속성 적용 */
-    justify-content: space-between; /* 요소들 사이 공간 동등 배분 */
+    display: flex; 
     align-items: center; /* 수직 방향 가운데 정렬 */
     color: #A7A6A6;
     font-weight: 400;
@@ -39,12 +38,28 @@
     outline: none;
 }
 
+
 .review-rating {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
 }
+
+.rating-and-stars, .actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* 필요하다면 .actions에 대한 추가 스타일링을 적용할 수 있습니다. 예를 들어, 오른쪽에 정렬하고자 한다면: */
+  .actions {
+    margin-left: auto;
+  }
+
+.rating-container {
+    display: flex;
+    align-items: center;
+  }
 
 .review-rating-number {
     color: #4D4D4D;

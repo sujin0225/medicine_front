@@ -756,7 +756,7 @@ const accordion = [
                                 <Pagination
                                     render={() => (
                                     ReviewList.slice((currentPage-1)*6, currentPage*6).map((reviewListItem, index) => (
-                                    <ReviewItem key={index} reviewListItem={reviewListItem} onDeleteSuccess={refreshReviews}/>
+                                    <ReviewItem key={index} reviewListItem={reviewListItem} onSuccessUpdate={refreshReviews}/>
                                     ))
                                     )}
                                     onPageChange={handlePageChange}

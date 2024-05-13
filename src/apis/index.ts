@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto } from "./response/review"
+import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto } from "./response/review"
 import { GetSignInUserResponseDto } from "./response/user"
-import { PostReviewRequestDto } from "./request/review"
+import { PostReviewRequestDto, PatchReviewRequestDto } from "./request/review"
 import { ResponseDto } from "./response";
 import { error } from "console";
 
@@ -34,11 +34,12 @@ const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 const GET_REVIEW_LIST_URL = (ITEM_SEQ: number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`;
 const POST_REVIEW_URL = (ITEM_SEQ : number | string) => `${API_DOMAIN}/review/${ITEM_SEQ}`;
+const PATCH_REVIEW_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/${reviewNumber}`
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 const DELETE_REVIEW_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/${reviewNumber}`;
 const GET_SIGN_IN_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
+const GET_REVIEW_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/details/${reviewNumber}`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
-
 
 //아이디 중복 체크
 export const idCheckRequest = async (requestBody: idCheckRequestDto) => {
@@ -80,7 +81,7 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
     return result;    
 }
 
-//리뷰 불러오기
+//리뷰 리스트 불러오기
 export const GetReviewListRequest = async(ITEM_SEQ: number | string) => {
     const result = await axios.get(GET_REVIEW_LIST_URL(ITEM_SEQ))
         .then(response => {
@@ -94,6 +95,21 @@ export const GetReviewListRequest = async(ITEM_SEQ: number | string) => {
         })
         return result;
 }
+
+//해당 리뷰 불러오기
+export const getReviewRequest = async (reveiwNumber: number | string) => {
+    const result = await axios.get(GET_REVIEW_URL(reveiwNumber))
+    .then(response => {
+        const responseBody: GetReviewResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+};
 
 //리뷰 글 작성
 export const postReviewRequest = async (ITEM_SEQ: number | string, requestBody: PostReviewRequestDto, accessToken: string) => {
@@ -132,6 +148,21 @@ export const deleteReviewRequest = async (reviewNumber: number | string, accessT
     const result = await axios.delete(DELETE_REVIEW_URL(reviewNumber), authorization(accessToken))
         .then(response => {
             const responseBody: DeleteReviewResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+}
+
+//리뷰 수정
+export const patchReviewRequest = async (reviewNumber: number | string, requestBody: PatchReviewRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_REVIEW_URL(reviewNumber), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchReviewResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {

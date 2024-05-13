@@ -33,20 +33,6 @@
     color: #CBCBCB;
   }
 
-.icon-button {
-    border-radius: 50% 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.icon-button:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
 .search-icon {
     margin-right: 27px;
     background-image: url(image/search.png);
