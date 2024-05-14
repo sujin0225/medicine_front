@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto } from "./response/review"
+import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto } from "./response/review"
 import { GetSignInUserResponseDto } from "./response/user"
 import { PostReviewRequestDto, PatchReviewRequestDto } from "./request/review"
 import { ResponseDto } from "./response";
@@ -39,6 +39,8 @@ const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 const DELETE_REVIEW_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/${reviewNumber}`;
 const GET_SIGN_IN_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const GET_REVIEW_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/details/${reviewNumber}`;
+const PUT_HELPFUL_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/helpful/${reviewNumber}`;
+const GET_HELPFUL_LIST_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/helpful-list/${reviewNumber}`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -186,4 +188,34 @@ export const getSignInUserRequest = async (userId:string, accessToken: string) =
             return responseBody;
         });
         return result;
+}
+
+//도움돼요 기능
+export const putHelpfulRequest = async (reviewNumber: number | string, accessToken: string) => {
+    const result = await axios.put(PUT_HELPFUL_URL(reviewNumber), {}, authorization(accessToken))
+    .then(response => {
+        const responseBody: GetSignInUserResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+
+//도움돼요 리스트
+export const getHelpfulListRequest = async (reviewNumber: number | string) => {
+    const result = await axios.get(GET_HELPFUL_LIST_URL(reviewNumber))
+    .then(response => {
+        const responseBody: GetHelpfulResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    });
+    return result;
 }

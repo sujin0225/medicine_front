@@ -25,8 +25,7 @@ export default function MedicineDetail() {
   const [medicinepermissionList, setMedicinepermissionList] = useState<medicinepermissionList[]>([]);
   const [medicineinfoList, setMedicineinfoList] = useState<MedicineinfoItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  //리뷰 작성하기 버튼 상태
-  const [isReview, setIsReview] = useState<boolean>(false);
+
   //state: 전체 댓글 개수 상태
   const [totalReviewCount, setTotalReviewCount] = useState<number>(0);
   //리뷰 리스트 상태
@@ -41,8 +40,6 @@ export default function MedicineDetail() {
   const [starRating, setStarRating] = useState<number>(5);
   //리뷰 textarea 참조 상태
   const reviewRef = useRef<HTMLTextAreaElement | null>(null);
-  //로그인 유저 상태
-  const { loginUser } = useLoginUserStore();
   //쿠키 상태
   const[cookies, setCookies] = useCookies();
   //이미지 입력 요소 참조 상태
@@ -51,7 +48,6 @@ export default function MedicineDetail() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   //게시물 이미지 리스트
   const { reviewImageFileList, setReviewImageFileList } = useReviewStore();
-  const location = useLocation();
 
   const toggleTab = (index: number) => {
       setToggleState(index);
@@ -59,9 +55,6 @@ export default function MedicineDetail() {
 
   //아코디언 toggle
   const [selected, setSelected] = useState<number | null>(null);
-
-  //네비게이트
-  const navigate = useNavigate();
 
   const toggle = (i: number) => {
     if (selected === i) {
@@ -732,10 +725,10 @@ const accordion = [
                                                     <input ref={imageInputRef} type='file' accept='image/*' style={{ display: 'none' }} onChange={onImageChangeHandler}/>
                                                     </div>
                                                 </div>
-                                                <div className='board-write-images-box'>
+                                                <div className='write-images-box'>
                                                     {imageUrls.map((imageUrl, index) => 
                                                         <div className='review-write-image-box'>
-                                                        <img className='board-write-image' src={imageUrl}/>
+                                                        <img className='write-image' src={imageUrl}/>
                                                         <div className='image-close' onClick={() => onImageCloseButtonClickHandler(index)}>
                                                         <div className='icon close-icon'></div>
                                                     </div>
@@ -755,9 +748,13 @@ const accordion = [
                             </div>
                                 <Pagination
                                     render={() => (
+                                    totalReviewCount > 0 ? ( 
                                     ReviewList.slice((currentPage-1)*6, currentPage*6).map((reviewListItem, index) => (
                                     <ReviewItem key={index} reviewListItem={reviewListItem} onSuccessUpdate={refreshReviews}/>
                                     ))
+                                ):(
+                                    <div className='review-empty'>해당 의약품 리뷰가 없습니다.</div>
+                                )
                                     )}
                                     onPageChange={handlePageChange}
                                     currentPage={currentPage} 

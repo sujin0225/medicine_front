@@ -118,3 +118,11 @@
 .icon-button {
   background-image: url(assets/image/more.png);
 }
+
+.helpful-full {
+  background-image: url(assets/image/helpful-full.png);
+}
+
+.helpful-empty {
+  background-image: url(assets/image/helpful-empty.png);
+}

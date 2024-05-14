@@ -4,6 +4,7 @@ import medicinepermissionList from "./medicine-permission.interface"
 import MedicineinfoItem from "./medicine-info.interface"
 import ReviewListItem from "./review-list-item.interface"
 import Review from "./review.interface";
+import HelpfulListItem from "./helpful-list-item.interface";
 
 export type {
     User,
@@ -11,5 +12,6 @@ export type {
     medicinepermissionList,
     MedicineinfoItem,
     ReviewListItem,
-    Review
+    Review,
+    HelpfulListItem
 }

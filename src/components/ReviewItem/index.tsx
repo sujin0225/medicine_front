@@ -1,15 +1,14 @@
 import React, { useState, ChangeEvent, useRef, useEffect } from 'react';
 import './style.css';
-import { ReviewListItem } from 'types/interface';
+import { HelpfulListItem, ReviewListItem } from 'types/interface';
 import { useLoginUserStore, useReviewStore } from 'stores';
 import { useCookies } from 'react-cookie';
 import { deleteReviewRequest } from 'apis';
-import { DeleteReviewResponseDto, GetReviewListResponseDto, PatchReviewResponseDto, GetReviewResponseDto } from 'apis/response/review';
+import { DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, PutFavoriteResponseDto, GetHelpfulResponseDto } from 'apis/response/review';
 import { ResponseDto } from 'apis/response';
-import { useParams } from 'react-router-dom';
 import { convertUrlsToFile } from 'utils';
 import Rating from "components/Rating/Rating";
-import { GetReviewListRequest, patchReviewRequest, fileuploadRequest, getReviewRequest } from 'apis';
+import { GetReviewListRequest, patchReviewRequest, fileuploadRequest, getReviewRequest, putHelpfulRequest, getHelpfulListRequest } from 'apis';
 import { PatchReviewRequestDto } from 'apis/request/review';
 
 interface Props {
@@ -18,7 +17,7 @@ interface Props {
 }
 
 export default function ReviewItem({reviewListItem, onSuccessUpdate}: Props) {
-    const { reviewNumber, userId, itemSeq, content, writeDatetime, starRating, reviewImageList } = reviewListItem;
+    const { reviewNumber, userId, itemSeq, content, writeDatetime, starRating, reviewImageList, helpfulCount } = reviewListItem;
 
     const stars = [];
   for (let i = 1; i <= 5; i++) {
@@ -54,8 +53,12 @@ export default function ReviewItem({reviewListItem, onSuccessUpdate}: Props) {
   const contentRef = useRef<HTMLTextAreaElement | null>(null);
   //리뷰 별점 상태
   const [StarRating, setStarRating] = useState<number>(5);
-  const { ITEM_SEQ } = useParams();
+  //도움돼요 버튼 상태
+  const [helpful, setHelpful] = useState<boolean>(false);
+  //도움돼요 리스트 상태
+  const [helpfulList, setHelpfulList] = useState<HelpfulListItem[]>([]);
 
+//get review response 처리 함수
 const getReviewResponse = (reviewNumber:number,  responseBody: GetReviewResponseDto | ResponseDto | null) => {
   const { content, userId, reviewNumber:reviewNumberFromResponse, reviewImageList, starRating } = responseBody as GetReviewResponseDto;
   console.log(content, userId, reviewNumber, reviewImageList, starRating);
@@ -73,11 +76,78 @@ const getReviewResponse = (reviewNumber:number,  responseBody: GetReviewResponse
   contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
 };
 
+
+  //delete review response 처리 함수
+  const deleteReviewResponse = (responseBody: DeleteReviewResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'VF') alert('잘못된 접근입니다.');
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    if(code !== 'SU') alert('댓글이 삭제에 실패했습니다.'); 
+    if(code === 'SU') alert('댓글이 삭제되었습니다.'); 
+    onSuccessUpdate()
+    setShowMore(false);
+    return;
+  }
+
+  //function: patch board response 처리 함수
+  const patchReviewResponse = (responseBody: PatchReviewResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    if(code === 'VF') alert('리뷰내용은 필수입니다.');
+    if(code !== 'SU') return;
+
+    setReviewImageFileList([]);
+    onSuccessUpdate()
+    setShowMore(false);
+    setIsUpdate(false);
+}
+
+    //function: put helpful response 처리 함수
+    const putHelpfulResponse = (responseBody: PutFavoriteResponseDto | ResponseDto | null) => {
+      if(!responseBody) return;
+      const { code } = responseBody;
+      if(code === 'VF') alert('잘못된 접근입니다.');
+      if(code === 'NU') alert('존재하지 않는 유저입니다.');
+      if(code === 'AF') alert('인증에 실패했습니다.');
+      if(code === 'DBE') alert('데이터베이스 오류입니다.');
+      if(code !== 'SU') return;
+      if(!reviewNumber) return;
+      getHelpfulListRequest(reviewNumber).then(gethelpfulListResponse);
+      // setHelpful(prev => !prev);
+      onSuccessUpdate()
+    }
+
+//get helpfulList response 처리 함수
+const gethelpfulListResponse = (responseBody: GetHelpfulResponseDto | ResponseDto | null) => {
+  if(!responseBody) return;
+  const { code } = responseBody;
+  if(code === 'DBE') {
+    alert('데이터베이스 오류입니다.');
+    return;
+  }
+  if(code !== 'SU') return;
+
+  const { helpfulList } = responseBody as GetHelpfulResponseDto;
+  setHelpfulList(helpfulList);
+
+  if(!loginUser) {
+    setHelpful(false);
+    return;
+  }
+  const isHelpful = helpfulList.findIndex(helpful => helpful.userId === loginUser.userId) !== -1;
+  setHelpful(isHelpful);
+}
+
+useEffect(() => {
+  getHelpfulListRequest(reviewNumber).then(gethelpfulListResponse);
+}, [reviewNumber]);
+
 //event handler: 내용 변경 이벤트 처리
 const onContentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
   const { value } = event.target;
   setContent(value);
-  console.log(value);
 
   if(!contentRef.current) return;
   contentRef.current.style.height = 'auto';
@@ -106,7 +176,7 @@ const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     imageInputRef.current.click();
   }
 
-  //event handler: 이미지 닫기 버튼 클릭 이벤트 처리
+  //이미지 닫기 버튼 클릭 이벤트 처리
   const onImageCloseButtonClickHandler = (deleteIndex: number) => {
     if(!imageInputRef.current) return;
     imageInputRef.current.value = '';
@@ -118,29 +188,11 @@ const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setReviewImageFileList(newReviewImageFileList);
   }
 
-  //delete review response 처리 함수
-  const deleteReviewResponse = (responseBody: DeleteReviewResponseDto | ResponseDto | null) => {
-    if(!responseBody) return;
-    const { code } = responseBody;
-    if(code === 'VF') alert('잘못된 접근입니다.');
-    if(code === 'DBE') alert('데이터베이스 오류입니다.');
-    if(code !== 'SU') alert('댓글이 삭제에 실패했습니다.'); 
-    if(code === 'SU') alert('댓글이 삭제되었습니다.'); 
-    onSuccessUpdate()
-    return;
+  //도움돼요 버튼 클릭 이벤트 처리
+  const onHelpfulClickHandler = () => {
+    if(!reviewNumber || !loginUser || !cookies.accessToken) return;
+    putHelpfulRequest(reviewNumber, cookies.accessToken).then(putHelpfulResponse);
   }
-
-  //function: patch board response 처리 함수
-  const patchReviewResponse = (responseBody: PatchReviewResponseDto | ResponseDto | null) => {
-    if(!responseBody) return;
-    const { code } = responseBody;
-    if(code === 'DBE') alert('데이터베이스 오류입니다.');
-    if(code === 'VF') alert('리뷰내용은 필수입니다.');
-    if(code !== 'SU') return;
-
-    setReviewImageFileList([]);
-    onSuccessUpdate()
-}
 
 //more 버튼 클릭 이벤트 처리
 const onMoreButtonClickHandler = () => {
@@ -225,13 +277,13 @@ return (
     <div className="actions">
     {isWriter && 
       <div className='icon-button' onClick={onMoreButtonClickHandler}>
-        <div className='icon more-icon'></div>
+        <div className='more-icon'></div>
       </div>
       }
       {showMore &&
-        <div className='board-detail-more-box'>
-          <div className='board-detail-delete-button' onClick={onUpdateButtonClickHandler}>{'수정'}</div>
-          <div className='board-detail-delete-button' onClick={onDeleteButtonClickHandler}>{'삭제'}</div>
+        <div className='review-detail-more-box'>
+          <div className='review-detail-update-button' onClick={onUpdateButtonClickHandler}>{'수정'}</div>
+          <div className='review-detail-delete-button' onClick={onDeleteButtonClickHandler}>{'삭제'}</div>
         </div>
         }  
     </div>
@@ -239,6 +291,15 @@ return (
 <div className='review-content-id'>{userId} | <div className='review-date'>{writeDatetime}</div></div>
   <div className='review-content'>{content}</div>
     {reviewImageList.map(image => <img className='review-image' src={image} />)}
+    <div className='helpful'>도움돼요
+    <div className='helpful-button' onClick={onHelpfulClickHandler}>
+    {helpful ?
+      <div className='icon helpful-full'></div> :
+      <div className='icon helpful-empty'></div>
+    }
+    </div>
+    <span className='helpful-count'>{helpfulCount}</span>
+  </div>
     {isUpdate && (
        <div className='showreview'>
         <div className='rating-gap'>
@@ -253,16 +314,16 @@ return (
                     <div className='review-input-container'>
                         <div className='board-write-content-box'>
                             <textarea className='review-textarea' placeholder='리뷰를 작성해보세요.' onChange={onContentChangeHandler} value={reviewcontent} ref={contentRef}/>
-                            <div className='icon camera-icon' onClick={onImageUploadButtonClickHandler}></div>
+                            <div className='camera-icon' onClick={onImageUploadButtonClickHandler}></div>
                             <input type='file' accept='image/*' style={{ display: 'none' }} onChange={onImageChangeHandler} ref={imageInputRef}/>
                         </div>
                     </div>
                     <div className='board-write-images-box'>
                         {imageUrls.map((imageUrl, index) => (
                             <div className='review-write-image-box' key={index}>
-                                <img className='board-write-image' src={imageUrl} alt="Review"/>
+                                <img className='write-image' src={imageUrl} alt="Review"/>
                                 <div className='image-close' onClick={() => onImageCloseButtonClickHandler(index)}>
-                                    <div className='icon close-icon'></div>
+                                    <div className='close-icon'></div>
                                 </div>
                             </div>
                         ))}

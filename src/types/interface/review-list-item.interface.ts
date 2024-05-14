@@ -4,6 +4,7 @@ export default interface ReviewListItem {
     itemSeq: string;
     content: string;
     writeDatetime: string;
+    helpfulCount: number;
     starRating: number;
     reviewImageList: string[];
 }
