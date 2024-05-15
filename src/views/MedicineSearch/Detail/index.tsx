@@ -151,7 +151,6 @@ useEffect(() => {
     GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
   }, [ITEM_SEQ]);
 
-
   const handlePageChange = (newPageNo: number) => {
     setCurrentPage(newPageNo); // 페이지 번호 변경
     // fetchData(newPageNo); // 변경된 페이지 번호로 데이터 다시 가져오기

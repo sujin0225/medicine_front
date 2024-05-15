@@ -31,6 +31,7 @@ function App() {
   const { setLoginUser, resetLoginUser } = useLoginUserStore();
   //state: cookie 상태
   const [cookies, setCookie] = useCookies();
+  
   //function: get sign in user response 처리 함수 
   const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
@@ -43,14 +44,6 @@ function App() {
     setLoginUser(loginUser);
   }
 
-  // //effect: accessToken cookie값이 변경될 때 마다 실행할 함수
-  // useEffect(() => {
-  //   if(!cookies.accessToken) {
-  //       resetLoginUser();
-  //       return;
-  //   }
-  //   getSignInUserRequest(userId, cookies.accessToken).then(getSignInUserResponse);
-  // }, [cookies.accessToken]);
   useEffect(() => {
     if (!cookies.accessToken) {
       resetLoginUser();
