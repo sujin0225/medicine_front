@@ -2,6 +2,10 @@ import { useState, ChangeEvent, useRef, KeyboardEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import './Search.css';
 import { SEARCH_PATH } from 'constant';
+import { PostSearchRequestDto } from "apis/request/search";
+import { postSearchRequest } from "apis";
+import { PostSearchResponseDto } from "apis/response/search";
+import { ResponseDto } from 'apis/response';
 
 
 export default function Search() {
@@ -23,9 +27,24 @@ const onSearchWordChangekHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setWord(value);
 }
 
+//검색어 저장
+const postSearchResponse = (responseBody: PostSearchResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    console.log(code);
+    if(code !== 'SU') return;
+  }
+
 //event handler: 검색 버튼 클릭 이벤트 처리 함수
 const onSearchButtonClickHandler = () => {
     navigate(SEARCH_PATH(word));
+    const requestBody: PostSearchRequestDto = {
+        searchWord:word
+    };
+
+    postSearchRequest(word, requestBody).then(postSearchResponse);
 }
 
 const onSearchWordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -33,7 +52,6 @@ const onSearchWordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if(!searchButtonRef.current) return;
     searchButtonRef.current.click();
 };
-
 
 //effect: 검색어 path variable 변경 될때 마다 실행될 함수
 useEffect(() => {
@@ -45,7 +63,7 @@ useEffect(() => {
   return (
     <div id='search'>
     <div className='search-input-box'>
-        <input className='search-input' type='text' placeholder='제품명, 코드, 업체명등 입력해주세요.' value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler}/>
+        <input className='search-input' type='text' placeholder='제품명을 입력해주세요.' value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler}/>
             <div className='search-icon' ref={searchButtonRef} onClick={onSearchButtonClickHandler}></div>
         </div>
     </div>

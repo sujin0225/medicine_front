@@ -130,6 +130,7 @@ const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | 
     
     // if(code === 'VF') alert('잘못된 접근입니다.');
     if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    console.log(code);
     if(code !== 'SU') return;
   
     // 리뷰 저장 성공 후 상태 초기화

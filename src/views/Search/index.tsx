@@ -7,6 +7,7 @@ import { MedicineListItem } from 'types/interface';
 import MedicineItem from 'components/MedicineItem/MedicineItem';
 import { medicineSearch } from 'publicapi';
 
+
 export default function SearchView() {
 
   //state: searchWord path variable
@@ -36,6 +37,8 @@ export default function SearchView() {
   const handlePageChange = (newPageNo: number) => {
     setCurrentPage(newPageNo); // 페이지 번호 변경
   };
+
+
 
   if(!searchWord) return(<></>);
   return (
