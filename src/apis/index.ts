@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto } from "./response/review"
-import { PostSearchResponseDto } from "./response/search";
+import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
 import { GetSignInUserResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto } from "./request/review";
 import { PostSearchRequestDto } from "./request/search";
@@ -43,6 +43,7 @@ const GET_SIGN_IN_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const GET_REVIEW_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/details/${reviewNumber}`;
 const PUT_HELPFUL_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/helpful/${reviewNumber}`;
 const GET_HELPFUL_LIST_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/helpful-list/${reviewNumber}`;
+const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
 const POST_SEARCH_URL = (searchWord: string) => `${API_DOMAIN}/search/${searchWord}`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
@@ -239,3 +240,18 @@ export const postSearchRequest = async (searchWord: string, requestBody: PostSea
     });
     return result;
 }
+
+//인기 검색어 불러오기
+export const getPopularListRequest = async () => {
+    const result = await axios.get(GET_POPULAR_LIST_URL())
+        .then(response => {
+            const responseBody: GetPopularListReponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;    
+};

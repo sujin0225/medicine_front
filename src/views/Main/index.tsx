@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './style.css'
 import Search from 'components/Search/Search';
 import { MEDICINE_SEARCH_PATH } from 'constant'
 import { useNavigate } from 'react-router-dom'
+import { GetPopularListReponseDto } from 'apis/response/search';
+import { ResponseDto } from 'apis/response';
+import { getPopularListRequest } from 'apis';
+import { SEARCH_PATH } from 'constant';
 
 //메인 화면 컴포넌트
 export default function Main() {
+//state: 인기 검색어 리스트 상태
+const [popularWordList, setPopularWordList] = useState<string[]>([]);
+
 //function: 네비게이트 함수
 const navigate = useNavigate();
 
@@ -13,6 +20,26 @@ const navigate = useNavigate();
 const onMedicineSearchClickHandler = () => {
   navigate(MEDICINE_SEARCH_PATH());
 }
+
+//function: get popular list response 처리 함수
+const getPopularListResponse = (responseBody: GetPopularListReponseDto | ResponseDto | null) => {
+  if(!responseBody) return;
+  const { code } = responseBody;
+  if (code === 'DBE') alert('데이터베이스 오류입니다.');
+  if (code !== 'SU') return;
+
+  const { popularWordList } = responseBody as GetPopularListReponseDto;
+  setPopularWordList(popularWordList);
+};
+
+//event handler: 인기 검색어 클릭 이벤트 처리
+const onPopularWordClickHandler = (word: string) => {
+  navigate(SEARCH_PATH(word));
+}
+
+useEffect(() => { 
+  getPopularListRequest().then(getPopularListResponse);
+}, []);
   
   return (
     <>
@@ -60,16 +87,7 @@ const onMedicineSearchClickHandler = () => {
         </div>
         <div className='main-popular-card'>
           <div className='main-popular-card-contents'>
-            <div className='word-badge'>밀크시슬</div>
-            <div className='word-badge'>방풍통성산</div>
-            <div className='word-badge'>농포성여드름</div>
-            <div className='word-badge'>인데놀</div>
-            <div className='word-badge'>안정액</div>
-            <div className='word-badge'>인데놀</div>
-            <div className='word-badge'>농포성여드름</div>
-            <div className='word-badge'>방풍통성산</div>
-            <div className='word-badge'>밀크시슬</div>
-            <div className='word-badge'>인데놀</div>
+          {popularWordList.map(word => <div className='word-badge' onClick={() => onPopularWordClickHandler(word)}>{word}</div>)}
           </div>
         </div>  
       </div>
