@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './Header.css'
 import { useNavigate, useParams } from 'react-router-dom'
-import { MAIN_PATH, SIGN_IN_PATH, SIGN_UP_PATH, USER_PATH, MEDICINE_SEARCH_PATH } from 'constant'
+import { MAIN_PATH, SIGN_IN_PATH, SIGN_UP_PATH, USER_PATH, MEDICINE_SEARCH_PATH, MEDICINE_STORE_PATH } from 'constant'
 import { useLoginUserStore } from 'stores'
 import { useCookies } from 'react-cookie';
 
@@ -31,6 +31,11 @@ const signupClickHandler = () => {
 //event handler: 의약품 검색 버튼 클릭 이벤트 처리 함수
 const onMedicineSearchClickHandler = () => {
     navigate(MEDICINE_SEARCH_PATH());
+};
+
+//event handler: 상비약 판매처 버튼 클릭 이벤트 처리 함수
+const onMedicineStoreClickHandler = () => {
+    navigate(MEDICINE_STORE_PATH());
 };
 
 //event handler: 마이페이지 버튼 클릭 이벤트 처리 함수
@@ -73,7 +78,7 @@ useEffect(() => {
             <div className='header-content-box'>
                 <div className='header-logo' onClick={onLogoClickHandler}>{'이게머약?'}</div>
                     <div className='header-content' onClick={onMedicineSearchClickHandler}>{'의약품검색'}</div>
-                    <div className='header-content'>{'상비약판매처'}</div>
+                    <div className='header-content' onClick={onMedicineStoreClickHandler}>{'상비약판매처'}</div>
                 </div>
                 <div className='header-right-box'>
                     <div className='header-user-box'>

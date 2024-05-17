@@ -126,3 +126,8 @@
 .helpful-empty {
   background-image: url(assets/image/helpful-empty.png);
 }
+
+::selection {
+  background: #C79A9A; 
+  color: #FCFCFC; 
+}

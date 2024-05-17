@@ -21,6 +21,10 @@ const searchButtonRef = useRef<HTMLDivElement | null>(null);
 //state: 검색어 path variable 상태
 const { searchWord } = useParams();
 
+//state: 검색어 상태
+const [searchType, setSearchType] = useState<'medicine' | 'convenienceStore'>('medicine');
+
+
 //event handler: 검색어 버튼 클릭 이벤트 처리 함수
 const onSearchWordChangekHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -38,13 +42,27 @@ const postSearchResponse = (responseBody: PostSearchResponseDto | ResponseDto | 
   }
 
 //event handler: 검색 버튼 클릭 이벤트 처리 함수
-const onSearchButtonClickHandler = () => {
-    navigate(SEARCH_PATH(word));
-    const requestBody: PostSearchRequestDto = {
-        searchWord:word
-    };
+// const onSearchButtonClickHandler = () => {
+//     navigate(SEARCH_PATH(word));
+//     const requestBody: PostSearchRequestDto = {
+//         searchWord:word
+//     };
 
-    postSearchRequest(word, requestBody).then(postSearchResponse);
+//     postSearchRequest(word, requestBody).then(postSearchResponse);
+// }
+const onSearchButtonClickHandler = () => {
+    let path;
+    let requestBody;
+
+    if (searchType === 'medicine') {
+        path = SEARCH_PATH(word);
+        requestBody = { searchWord: word };
+        navigate(path);
+        postSearchRequest(word, requestBody).then(postSearchResponse);
+    } else if (searchType === 'convenienceStore') {
+        // path = SEARCH_CONVENIENCE_STORE_PATH(word);
+        requestBody = { searchWord: word };
+    }
 }
 
 const onSearchWordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -63,7 +81,8 @@ useEffect(() => {
   return (
     <div id='search'>
     <div className='search-input-box'>
-        <input className='search-input' type='text' placeholder='제품명을 입력해주세요.' value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler}/>
+        {/* <input className='search-input' type='text' placeholder='의약품명을 입력해주세요.' value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler}/> */}
+        <input className='search-input' type='text' placeholder={searchType === 'medicine' ? '의약품명을 입력해주세요.' : '편의점명을 입력해주세요.'} value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler} />
             <div className='search-icon' ref={searchButtonRef} onClick={onSearchButtonClickHandler}></div>
         </div>
     </div>

@@ -6,12 +6,9 @@ import { ChangeEvent, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import SignUp from 'views/Authentication/signup/signup';
 import SignIn from 'views/Authentication/signin/signin';
-import { SIGN_IN_PATH } from 'constant';
-import { SIGN_UP_PATH } from 'constant';
-import { MEDICINE_SEARCH_PATH } from 'constant';
-import { MEDICINE_DETAIL_PATH } from 'constant';
-import { SEARCH_PATH } from 'constant';
-import { MAIN_PATH } from 'constant';
+import Store from 'views/MedicineStore';
+import Mypage from 'views/Mypage';
+import { SIGN_IN_PATH, SIGN_UP_PATH, MEDICINE_SEARCH_PATH, MEDICINE_DETAIL_PATH, SEARCH_PATH, MAIN_PATH, MEDICINE_STORE_PATH, USER_PATH } from 'constant';
 import { useLoginUserStore } from 'stores';
 import { useEffect } from 'react';
 import MedicineSearch from 'views/MedicineSearch/Main';
@@ -65,6 +62,8 @@ function App() {
         <Route path={SEARCH_PATH(':searchWord')} element={<Search />} />
         <Route path={SIGN_IN_PATH()} element={<SignIn />} />
         <Route path={SIGN_UP_PATH()} element={<SignUp />} />
+        <Route path={MEDICINE_STORE_PATH()} element={<Store />} />
+        <Route path={USER_PATH(':userId')} element={<Mypage />} /> 
         <Route path='oauth-response/:token/:expirationTime' element={<OAuth/>} />
       </Route>
     </Routes>
