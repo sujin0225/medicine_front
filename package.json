@@ -13,6 +13,7 @@
     "aos": "^2.3.4",
     "axios": "^1.6.7",
     "buffer": "^6.0.3",
+    "proj4": "^2.11.0",
     "react": "^18.2.0",
     "react-cookie": "^7.0.2",
     "react-dom": "^18.2.0",
@@ -48,6 +49,7 @@
     ]
   },
   "devDependencies": {
-    "@types/aos": "^3.0.7"
+    "@types/aos": "^3.0.7",
+    "@types/proj4": "^2.5.5"
   }
 }
