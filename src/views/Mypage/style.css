@@ -1,0 +1,33 @@
+#mypage-wrapper {
+    padding: 91px 0; 
+    display: flex;
+    justify-content: center;
+    margin-top: 90px;
+}
+
+.mypage-container {
+    width: 1320px;
+    min-width: 1320px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mypage-contents-box {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 8fr;
+    column-gap: 44px;
+}
+
+.mypage-contents-box {
+    grid-column: 2 / 3;
+}
+
+.mypage-navigate-box-id {
+    color: #4D4D4D;
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 1px solid #EEEEEE;
+    padding-bottom: 40px;
+}

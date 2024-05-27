@@ -8,6 +8,7 @@ import SignUp from 'views/Authentication/signup/signup';
 import SignIn from 'views/Authentication/signin/signin';
 import Store from 'views/MedicineStore';
 import Mypage from 'views/Mypage';
+import MypageNavigate from 'components/MyPage_navigate';
 import { SIGN_IN_PATH, SIGN_UP_PATH, MEDICINE_SEARCH_PATH, MEDICINE_DETAIL_PATH, SEARCH_PATH, MAIN_PATH, MEDICINE_STORE_PATH, USER_PATH } from 'constant';
 import { useLoginUserStore } from 'stores';
 import { useEffect } from 'react';
@@ -65,6 +66,7 @@ function App() {
         <Route path={MEDICINE_STORE_PATH()} element={<Store />} />
         <Route path={USER_PATH(':userId')} element={<Mypage />} /> 
         <Route path='oauth-response/:token/:expirationTime' element={<OAuth/>} />
+        {/* <Route path="/user/:username" component={MypageNavigate} /> */}
       </Route>
     </Routes>
   );

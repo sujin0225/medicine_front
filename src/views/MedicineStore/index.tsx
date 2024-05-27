@@ -6,20 +6,26 @@ import Search from 'components/Search/Search';
 import markerImage from './image/marker.png';
 import { medicinestore } from 'publicapi';
 import { MedicineStore } from 'types/interface';
+import { PostMedicineResponseDto } from 'apis/response/medicineStore';
+import { PostMedicineRequestDto } from 'apis/request/medicineStore';
 import proj4 from 'proj4';
+import { ResponseDto } from 'apis/response';
+import { postMedicineStoreRequest } from 'apis';
 declare const kakao: any;
+
 
 export default function Store() {
   const [startIndex, setStartIndex] = useState('0'); // 시작 인덱스 상태
   const [endIndex, setEndIndex] = useState('5'); // 종료 인덱스 상태
   const [medicineStore, setMedicineStore] = useState<MedicineStore[]>([]);
   const [locations, setLocations] = useState<[string, string, string][]>([]);
-
+  const [map, setMap] = useState(null);
   //변환된 위도, 경도값 저장
   const [transformedCoord, setTransformedCoord] = useState<[number, number][] | null>(null);
   const [nametransformedCoord, setNameTransformedCoord] = useState<Location[] | null>(null);
   const wgs84 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs';
   const webMercator = '+proj=tmerc +lat_0=38 +lon_0=127 +k=0.9996 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs';
+  const [coordinates, setCoordinates] = useState<{ X: number | null, Y: number | null }>({ X: null, Y: null });
 
   type Location = {
     name: string;
@@ -48,30 +54,39 @@ export default function Store() {
 //     }
 // };
 
-const fetchData = async () => {
-  try {
-      const data = await medicinestore(); 
-      // setMedicineStore(data.LOCALDATA_010105.row); 
-      console.log("상비약 판매처 찾기:", data.LOCALDATA_010105_NW.row); 
-      const locations = data.LOCALDATA_010105_NW.row.map((spot: MedicineStore) =>[
-        spot.BPLCNM,
-        spot.X,
-        spot.Y
-      ]);
-      console.log(locations);
-      setLocations(locations);
-  } catch (error) {
-      console.error('데이터 불러오기 에러:', error);
-  }
-};
+// const fetchData = async () => {
+//   try {
+//       const data = await medicinestore(); 
+//       // setMedicineStore(data.LOCALDATA_010105.row); 
+//       console.log("상비약 판매처 찾기:", data.LOCALDATA_010105_NW.row); 
+//       const locations = data.LOCALDATA_010105_NW.row.map((spot: MedicineStore) =>[
+//         spot.BPLCNM,
+//         spot.X,
+//         spot.Y
+//       ]);
+//       console.log(locations);
+//       setLocations(locations);
+//   } catch (error) {
+//       console.error('데이터 불러오기 에러:', error);
+//   }
+// };
+
+const postMedicineStoreResponse = (responseBody: PostMedicineResponseDto | ResponseDto | null) => {
+  if(!responseBody) return;
+  const { code } = responseBody;
+
+  if(code === 'DBE') alert('데이터베이스 오류입니다.');
+  console.log(code);
+  if(code !== 'SU') return;
+}
 
 // useEffect(() => {
 //   fetchData(startIndex, endIndex);
 // }, [startIndex, endIndex])
 
-useEffect(() => {
-  fetchData();
-}, [])
+// useEffect(() => {
+//   fetchData();
+// }, [])
 
 useEffect(() => {
   handleConvert();
@@ -127,6 +142,89 @@ const handleConvert = () => {
 };
 
 //지도+마커 표시하기
+// useEffect(() => {
+//   const container = document.getElementById('map');
+//   navigator.geolocation.getCurrentPosition(
+//     (position) => {
+//       const { latitude, longitude } = position.coords;
+//       const options = {
+//         center: new kakao.maps.LatLng(latitude, longitude),
+//         level: 3
+//       };
+//       console.log("사용자의 위치: ", latitude, longitude);
+//       const map = new kakao.maps.Map(container, options);
+
+//       const requestBody: PostMedicineRequestDto = { X: latitude , Y: longitude};
+//       console.log("사용자 위치 정보에 가까운 상비의약품 판매처: ", requestBody);
+//       postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
+
+//       // nameTransformedCoord가 null이 아니면 마커를 생성하는 로직을 실행
+//       if (nametransformedCoord) {
+//         nametransformedCoord.forEach(({name, coords}) => { // 구조 분해 할당을 사용하여 name과 coords에 접근
+//           const [x, y] = coords; // coords는 [number, number] 타입
+//           const marker = new kakao.maps.Marker({
+//             position: new kakao.maps.LatLng(y, x), // 위도(y), 경도(x) 순서로 설정
+//             image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
+//               offset: new kakao.maps.Point(25, 50),
+//             })   
+//           });
+//           marker.setMap(map);
+//           const infowindow = new kakao.maps.InfoWindow({
+//             content: name, // 각 마커별 이름 사용
+//           });
+
+//           // 마커에 클릭 이벤트 리스너 추가
+//           kakao.maps.event.addListener(marker, 'click', () => {
+//             infowindow.open(map, marker);
+//           });
+//         });
+//       }
+//     },
+//     (error) => {
+//       console.error("Geolocation error: ", error); 
+//     }
+//   );
+// }, [nametransformedCoord]); // 의존성 배열에 올바른 상태 변수명 사용
+
+// useEffect(() => {
+//   const initializeMap = () => {
+//     const container = document.getElementById('map'); // 지도를 표시할 div
+
+//     navigator.geolocation.getCurrentPosition(
+//       (position) => {
+//         const { latitude, longitude } = position.coords;
+
+//         const options = {
+//           center: new kakao.maps.LatLng(latitude, longitude),
+//           level: 3,
+//         };
+
+//         console.log('초기 위치:', latitude, longitude);
+//         const map = new kakao.maps.Map(container, options);
+
+//         // 초기 좌표 설정
+//         setCoordinates({ X: latitude, Y: longitude });
+
+//         console.log("지도 객체 생성:", map);
+//         setMap(map);
+
+//         // 지도 클릭, 드래그 엔드, 줌 레벨 변경 이벤트 등록
+//         // addMapEventListeners(map);
+//       },
+//       (error) => {
+//         console.error('Error getting location: ', error);
+//       },
+//       { enableHighAccuracy: true }
+//     );
+//   };
+
+//   if (!map) {
+//     initializeMap();
+//   }
+// }, [map]);
+
+const [marker, setMarker] = useState(null);
+
 useEffect(() => {
   const container = document.getElementById('map');
   navigator.geolocation.getCurrentPosition(
@@ -136,36 +234,54 @@ useEffect(() => {
         center: new kakao.maps.LatLng(latitude, longitude),
         level: 3
       };
+      const mapInstance = new kakao.maps.Map(container, options);
+      setMap(mapInstance);
 
-      const map = new kakao.maps.Map(container, options);
+      console.log("초기 지도 중심 좌표: ", latitude, longitude);
 
-      // nameTransformedCoord가 null이 아니면 마커를 생성하는 로직을 실행
-      if (nametransformedCoord) {
-        nametransformedCoord.forEach(({name, coords}) => { // 구조 분해 할당을 사용하여 name과 coords에 접근
-          const [x, y] = coords; // coords는 [number, number] 타입
-          const marker = new kakao.maps.Marker({
-            position: new kakao.maps.LatLng(y, x), // 위도(y), 경도(x) 순서로 설정
-            image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
-              offset: new kakao.maps.Point(25, 50),
-            })   
-          });
-          marker.setMap(map);
-          const infowindow = new kakao.maps.InfoWindow({
-            content: name, // 각 마커별 이름 사용
-          });
+      kakao.maps.event.addListener(mapInstance, 'dragend', function() {
+        const center = mapInstance.getCenter();
+        const lat = center.getLat();
+        const lng = center.getLng();
+        console.log("드래그 후 지도 중심 좌표: ", lat, lng);
+        
+        const requestBody = { X: lat, Y: lng };
+        console.log("API 요청 좌표: ", requestBody);
+        
+        postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
 
-          // 마커에 클릭 이벤트 리스너 추가
-          kakao.maps.event.addListener(marker, 'click', () => {
-            infowindow.open(map, marker);
-          });
+        // 기존 마커 제거
+        // if (marker) {
+        //   marker.setMap(null);
+        // }
+
+        // 새로운 마커 추가
+        const newMarker = new kakao.maps.Marker({
+          position: new kakao.maps.LatLng(lat, lng),
+          image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
+            offset: new kakao.maps.Point(25, 50),
+          })   
         });
-      }
+        newMarker.setMap(mapInstance);
+        setMarker(newMarker);
+
+        // 필요하다면, 여기서 지도 마커와 정보를 업데이트하는 로직을 추가
+        // const infowindow = new kakao.maps.InfoWindow({
+        //   content: name, 
+        // });
+      });
     },
     (error) => {
-      console.error("Geolocation error: ", error); 
+      console.error("Geolocation error: ", error);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
     }
   );
-}, [nametransformedCoord]); // 의존성 배열에 올바른 상태 변수명 사용
+}, []);
+
 
   return (
     <>

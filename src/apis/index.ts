@@ -3,11 +3,14 @@ import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInReque
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
+import { GetMedicineResponeDto } from "./response/medicine";
 import { GetSignInUserResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto } from "./request/review";
+import { PostMedicineRequestDto } from "./request/medicineStore";
 import { PostSearchRequestDto } from "./request/search";
 import { ResponseDto } from "./response";
 import { error } from "console";
+import PostMedicineResponseDto from "./response/medicineStore/post-medicineStore.response.dto";
 
 const responseHandler = <T> (response: AxiosResponse<any, any>) => {
     const responseBody: T = response.data
@@ -45,6 +48,8 @@ const PUT_HELPFUL_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review
 const GET_HELPFUL_LIST_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/helpful-list/${reviewNumber}`;
 const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
 const POST_SEARCH_URL = (searchWord: string) => `${API_DOMAIN}/search/${searchWord}`;
+const POST_MEDICINE_STORE_URL = () => `${API_DOMAIN}/medicine-stores/locations`
+const GET_MEDICINE_DETAIL_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicine/${ITEM_SEQ}`
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -255,3 +260,35 @@ export const getPopularListRequest = async () => {
         });
     return result;    
 };
+
+//사용자 위치 주변 상비 의약품 판매처
+export const postMedicineStoreRequest = async (requestBody: PostMedicineRequestDto) => {
+    const result = await axios.post(POST_MEDICINE_STORE_URL(), requestBody)
+        .then(response => {
+            const responseBody: PostMedicineResponseDto = response.data;
+            console.log("사용자 근처 의약품 판매처: ", responseBody);
+            return responseBody;
+        })
+        .catch(error => {
+            console.error("사용자 근처 의약품 판매처 에러:", error);
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;    
+}
+
+//의약품 상세 기본정보 불러오기
+export const getMedicineRequest = async (ITEM_SEQ: string) => {
+    const result = await axios.get(GET_MEDICINE_DETAIL_URL(ITEM_SEQ))
+    .then(response => {
+        const responseBody: GetMedicineResponeDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}

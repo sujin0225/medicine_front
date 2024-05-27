@@ -3,10 +3,10 @@ import { Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import './style.css'
 import { medicineDetail } from 'publicapi';
 import { medicinepermission } from 'publicapi';
-import { MedicineListItem, medicinepermissionList, ReviewListItem } from 'types/interface';
+import { MedicineListItem, medicinepermissionList, ReviewListItem, Medicine } from 'types/interface';
 import { MedicineinfoItem } from 'types/interface';
 import { medicineinfo } from 'publicapi';
-import { GetReviewListRequest, postReviewRequest, fileuploadRequest } from 'apis'
+import { GetReviewListRequest, postReviewRequest, fileuploadRequest, getMedicineRequest } from 'apis'
 import { ResponseDto } from 'apis/response';
 import { GetReviewListResponseDto } from 'apis/response/review';
 import ReviewItem from 'components/ReviewItem';
@@ -16,12 +16,14 @@ import { useLoginUserStore, useReviewStore } from 'stores';
 import { useCookies } from 'react-cookie';
 import { PostReviewResponseDto } from 'apis/response/review';
 import { PostReviewRequestDto } from 'apis/request/review';
+import { GetMedicineResponeDto } from "apis/response/medicine";
 import Rating from "components/Rating/Rating";
 
 export default function MedicineDetail() {
   const [toggleState, setToggleState] = useState(1);
   const { ITEM_SEQ } = useParams();
   const [medicineList, setMedicineList] = useState<MedicineListItem[]>([]);
+  const [medicine, setMedicine] = useState<Medicine>({} as Medicine);
   const [medicinepermissionList, setMedicinepermissionList] = useState<medicinepermissionList[]>([]);
   const [medicineinfoList, setMedicineinfoList] = useState<MedicineinfoItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -64,22 +66,35 @@ export default function MedicineDetail() {
   };
 
 useEffect(() => {
-    fetchData(ITEM_SEQ ?? '');
+    // fetchData(ITEM_SEQ ?? '');
     fetchDataper(ITEM_SEQ ?? '');
     fetchDatainfo(ITEM_SEQ ?? '');
 }, [ITEM_SEQ]);
 
+useEffect(() => {
+    getMedicineRequest(ITEM_SEQ ?? '').then(getMedicineResponse);
+  }, [ITEM_SEQ]);
+
   //의약품 상세 정보
-  const fetchData = async (ITEM_SEQ: string) => {
-      try {
-          const data = await medicineDetail(ITEM_SEQ); 
-          setMedicineList(data.body.items); 
-          setTotalCount(data.body.totalCount); 
-          console.log("의약품 상세 불러오기:", data.body.items); 
-      } catch (error) {
-          console.error('데이터 불러오기 에러:', error);
-      }
-  };
+//   const fetchData = async (ITEM_SEQ: string) => {
+//       try {
+//           const data = await medicineDetail(ITEM_SEQ); 
+//           setMedicineList(data.body.items); 
+//           setTotalCount(data.body.totalCount); 
+//           console.log("의약품 상세 불러오기:", data.body.items); 
+//       } catch (error) {
+//           console.error('데이터 불러오기 에러:', error);
+//       }
+//   };
+
+const getMedicineResponse = (responseBody: GetMedicineResponeDto | ResponseDto | null) => {
+    // const { item_NAME, form_CODE_NAME, class_NO, class_NAME, etc_OTC_NAME, item_SEQ, entp_NAME, item_IMAGE } = responseBody as GetMedicineResponeDto;
+    // console.log(item_NAME, form_CODE_NAME, class_NO, class_NAME, etc_OTC_NAME, item_SEQ, entp_NAME, item_IMAGE);
+    const medicine: Medicine = {...responseBody as GetMedicineResponeDto};
+    setMedicine(medicine);
+    console.log(medicine);
+}
+
 
   //의약품 제품 허가정보
   const fetchDataper = async (ITEM_SEQ: string) => {
@@ -360,7 +375,7 @@ const accordion = [
   return (
       <div id='medicine-detail'>
           <div className='medicine-detail-container'>
-              {medicineList.map((item, index) => (
+              {/* {medicineList.map((item, index) => (
                   <div className='medicine-detail-content-box' key={index}>
                       <div className='medicine-detail-image' style={{ backgroundImage: `url(${item.ITEM_IMAGE})` }}></div>
                       <div className='medicine-detail-text-container'>
@@ -368,8 +383,16 @@ const accordion = [
                           <div className='medicine-detail-content-name'>{item.ITEM_NAME}</div>
                           <div className='medicine-detail-content-eng-name'>{item.ITEM_ENG_NAME}</div>
                       </div>
+                  </div> */}
+                <div className='medicine-detail-content-box'>
+                      <div className='medicine-detail-image' style={{ backgroundImage: `url(${medicine.item_IMAGE})` }}></div>
+                      <div className='medicine-detail-text-container'>
+                          <div className='medicine-detail-content-etc'>{medicine.etc_OTC_NAME}</div>
+                          <div className='medicine-detail-content-name'>{medicine.item_NAME}</div>
+                          <div className='medicine-detail-content-eng-name'>{medicine.item_ENG_NAME}</div>
+                      </div>
                   </div>
-              ))}
+              {/* ))} */}
               <div className="bloc-tabs">
                   <button className={toggleState === 1 ? "tabs active-tabs" : "tabs"} onClick={() => toggleTab(1)}>기본정보</button>
                   <button className={toggleState === 2 ? "tabs active-tabs" : "tabs"} onClick={() => toggleTab(2)}>전문가정보</button>
@@ -381,7 +404,7 @@ const accordion = [
                 {/* 기본정보 tab */}
                   {toggleState === 1 && <div className="content active-content">
                     <div className='medicine-detail-tabs-box'>
-                    {medicineList.map((item, index) => (
+                    {/* {medicineList.map((item, index) => (
                         <div className='medicine-detail-basics-content-box-main'>
                             <div className='medicine-detail-basics-content-box'>
                             <div className='medicine-detail-basics-title-top'>성분명</div>
@@ -421,42 +444,6 @@ const accordion = [
             </div>
         </div>
         <div className='content-line'></div> 
-        {/* <div className='medicine-detail-basics-content-box'>
-                <div className='medicine-detail-basics-title'>보험적용</div>
-                <div className='medicine-detail-text-container'>
-                <div className='medicine-detail-basics-content-four'></div>
-            </div>
-        </div>
-        <div className='content-line'></div> 
-        <div className='medicine-detail-basics-content-box'>
-                <div className='medicine-detail-basics-title'>보험적용</div>
-                <div className='medicine-detail-text-container'>
-                <div className='medicine-detail-basics-content-four'></div>
-            </div>
-        </div>
-        <div className='content-line'></div> 
-        <div className='medicine-detail-basics-content-box'>
-                <div className='medicine-detail-basics-title'>투여경로</div>
-                <div className='medicine-detail-text-container'>
-                <div className='medicine-detail-basics-content-four'></div>
-            </div>
-        </div>
-        <div className='content-line'></div>  */}
-        {/* {medicinepermissionList && medicinepermissionList.length > 0 && (
-        <>
-        {medicinepermissionList.map((permissionItem, index) => (
-        <div className='medicine-detail-basics-content-box' key={index}>
-            <div className='medicine-detail-basics-title'>판매사명</div>
-                <div className='medicine-detail-text-container'>
-                <div className='medicine-detail-basics-content-four'>
-                {item.ENTP_NAME} / {permissionItem.ENTP_ENG_NAME}
-            </div>
-        </div>
-      </div>
-    ))}
-    <div className='content-line'></div>
-  </>
-)} */}
 <div className='medicine-detail-basics-content-box'>
                             <div className='medicine-detail-basics-title'>판매사명</div>
                     {medicinepermissionList.length > 0 ? (
@@ -475,9 +462,65 @@ const accordion = [
 </div>
 <div className='content-line'></div>
      </div>
-))}
+))} */}
+                        <div className='medicine-detail-basics-content-box-main'>
+                            <div className='medicine-detail-basics-content-box'>
+                            <div className='medicine-detail-basics-title-top'>성분명</div>
+                    {medicinepermissionList.length > 0 ? (
+                    medicinepermissionList.map((permissionItem, index) => (
+                        <div className='medicine-detail-text-container' key={index}>
+                        <div className='medicine-detail-basics-content-top'>{permissionItem.MAIN_ITEM_INGR}</div>
+                    <div className='medicine-detail-basics-content-eng'>{permissionItem.MAIN_INGR_ENG}</div>
+            </div>
+    ))
+) : (
+    
+        <div className='medicine-detail-text-container'>
+            <div className='medicine-detail-basics-content-top'>-</div>
+        </div>
+)}
+</div>
+<div className='content-line-top'></div>
+            <div className='medicine-detail-basics-content-box'>
+                <div className='medicine-detail-basics-title'>분류</div>
+                <div className='medicine-detail-text-container'>
+                <div className='medicine-detail-basics-content-two'>[{medicine.class_NO}] {medicine.class_NAME}</div>
+            </div>
+        </div>
+        <div className='content-line'></div> 
+        <div className='medicine-detail-basics-content-box'>
+                <div className='medicine-detail-basics-title'>구분</div>
+                <div className='medicine-detail-text-container'>
+                <div className='medicine-detail-basics-content-two'>{medicine.etc_OTC_NAME}</div>
+            </div>
+        </div>
+        <div className='content-line'></div> 
+        <div className='medicine-detail-basics-content-box'>
+                <div className='medicine-detail-basics-title'>제형</div>
+                <div className='medicine-detail-text-container'>
+                <div className='medicine-detail-basics-content-two'>{medicine.form_CODE_NAME}</div>
+            </div>
+        </div>
+        <div className='content-line'></div> 
+<div className='medicine-detail-basics-content-box'>
+                            <div className='medicine-detail-basics-title'>판매사명</div>
+                    {medicinepermissionList.length > 0 ? (
+                    medicinepermissionList.map((permissionItem, index) => (
+                        <div className='medicine-detail-text-container' key={index}>
+                        <div className='medicine-detail-basics-content-four'>
+                            {medicine.entp_NAME} / {permissionItem.ENTP_ENG_NAME}
+                    </div>
+            </div>
+    ))
+) : (
+        <div className='medicine-detail-text-container'>
+            <div className='medicine-detail-basics-content-four'>{medicine.entp_NAME}</div>
+        </div>
+)}
+</div>
+<div className='content-line'></div>
+     </div>
     </div>
-
         </div>}
         {/* 전문가정보 tab */}
             {toggleState === 2 && <div className="content active-content">
