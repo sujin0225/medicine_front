@@ -5,6 +5,7 @@ import PatchReviewResponseDto from './patch-board-response.dto';
 import GetReviewResponseDto from './get-review.response.dto';
 import PutFavoriteResponseDto from './put-helpful.response.dto';
 import GetHelpfulResponseDto from './get-helpful-list.response.dto';
+import GetFavoriteMedicineResponseDto from './get-favorite-medicine.response.dto';
 
 export type {
     GetReviewListResponseDto,
@@ -13,5 +14,6 @@ export type {
     PatchReviewResponseDto,
     GetReviewResponseDto,
     PutFavoriteResponseDto,
-    GetHelpfulResponseDto
+    GetHelpfulResponseDto,
+    GetFavoriteMedicineResponseDto
 }

@@ -14,7 +14,7 @@
 }
 
 .mypage-contents-box {
-    width: 100%;
+    /* width: 100%; */
     display: grid;
     grid-template-columns: 2fr 8fr;
     column-gap: 44px;
@@ -30,4 +30,12 @@
     font-weight: 600;
     border-bottom: 1px solid #EEEEEE;
     padding-bottom: 40px;
+}
+
+.mypage-contents-box-text {
+    font-weight: 300;
+    font-size: 24px;
+    color: #4D4D4D;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #8D8D8D;
 }

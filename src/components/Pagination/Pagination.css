@@ -5,7 +5,7 @@
 }
 
 .pagination-container {
-    width: 1320px;
+    /* width: 1320px; */
     display: flex; 
     justify-content: center;
     gap: 45px;

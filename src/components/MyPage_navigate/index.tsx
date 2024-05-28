@@ -11,15 +11,14 @@ const { loginUser, setLoginUser, resetLoginUser } = useLoginUserStore();
 
 //state: cookie 상태
 const [cookies, setCookies] = useCookies();
+const userId = loginUser?.userId;
+const location = useLocation();
+const isUserPage = location.pathname === `/user/${userId}`;
 
 //function: 네비게이트 함수
 const navigate = useNavigate();
 
-const location = useLocation();
-const { userId } = useParams();
-const isUserPage = location.pathname.includes(`/user/${userId}`);
-
-  //event handler: 로그아웃 버튼 클릭 이벤트 처리
+//event handler: 로그아웃 버튼 클릭 이벤트 처리
 const onSignOutButtonClickHandler = () => {
   resetLoginUser();
   setCookies('accessToken', '', { path: MAIN_PATH(), expires: new Date() })

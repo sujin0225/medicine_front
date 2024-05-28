@@ -1,0 +1,46 @@
+.mypage-mymedicine-container {
+    display: flex;
+    border-bottom: 1px solid #EEEEEE;
+  }
+  
+  .mypage-mymedicine-text-box {
+    flex: 1; 
+    cursor: pointer;
+  }
+  
+  .mypage-mymedicine-text-title {
+    font-weight: 500;
+    font-size: 18px;
+    color: #4D4D4D;
+    margin: 28px 0px 15px 0px; 
+  }
+  
+  .mypage-mymedicine-text-content {
+    color: #8D8D8D;
+    font-size: 16px;
+    font-weight: 400;
+    padding-top: 5px;
+  }
+  
+  .mypage-mymedicine-image {
+    width: 246px; 
+    height: 134px; 
+    background-size: cover; 
+    background-position: center; 
+    margin-left: 16px; 
+    border-radius: 10px;
+    margin: 30px 0px 36px 0px;
+    cursor: pointer;
+  }
+  
+  .mypage-mymedicine-gold {
+    font-weight: 500;
+    color: #C7BA9A;
+    padding-top: 16px;
+  }
+
+  .mypage-mymedicine-red {
+    font-weight: 500;
+    color: #C69B94;
+    padding-top: 16px;
+  }

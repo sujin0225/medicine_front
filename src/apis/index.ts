@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto } from "./response/review"
+import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto, GetFavoriteMedicineResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
 import { GetMedicineResponeDto } from "./response/medicine";
 import { GetSignInUserResponseDto } from "./response/user";
@@ -50,6 +50,7 @@ const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
 const POST_SEARCH_URL = (searchWord: string) => `${API_DOMAIN}/search/${searchWord}`;
 const POST_MEDICINE_STORE_URL = () => `${API_DOMAIN}/medicine-stores/locations`
 const GET_MEDICINE_DETAIL_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicine/${ITEM_SEQ}`
+const GET_FAVORITE_MEDICINE_URL = () => `${API_DOMAIN}/review/favorite`
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -283,6 +284,21 @@ export const getMedicineRequest = async (ITEM_SEQ: string) => {
     const result = await axios.get(GET_MEDICINE_DETAIL_URL(ITEM_SEQ))
     .then(response => {
         const responseBody: GetMedicineResponeDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+
+//관심 의약품 불러오기
+export const getFavoriteMedicineRequest = async (accessToken: string) => {
+    const result = await axios.get(GET_FAVORITE_MEDICINE_URL(), authorization(accessToken))
+    .then(response => {
+        const responseBody: GetFavoriteMedicineResponseDto = response.data;
         return responseBody;
     })
     .catch(error => {
