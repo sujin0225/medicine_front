@@ -3,19 +3,19 @@ import { Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import './style.css'
 import { medicineDetail } from 'publicapi';
 import { medicinepermission } from 'publicapi';
-import { MedicineListItem, medicinepermissionList, ReviewListItem, Medicine } from 'types/interface';
+import { MedicineListItem, medicinepermissionList, ReviewListItem, Medicine, FavoriteMedicine } from 'types/interface';
 import { MedicineinfoItem } from 'types/interface';
 import { medicineinfo } from 'publicapi';
-import { GetReviewListRequest, postReviewRequest, fileuploadRequest, getMedicineRequest } from 'apis'
+import { GetReviewListRequest, postReviewRequest, fileuploadRequest, getMedicineRequest, getFavoriteMedicineRequest, putFavoriteMedicineRequest } from 'apis'
 import { ResponseDto } from 'apis/response';
-import { GetReviewListResponseDto } from 'apis/response/review';
+import { GetFavoriteMedicineResponseDto, GetReviewListResponseDto, PutFavoriteMedicineResponseDto } from 'apis/response/review';
 import ReviewItem from 'components/ReviewItem';
 import { MAIN_PATH } from 'constant';
 import Pagination from 'components/Pagination/Pagination';
 import { useLoginUserStore, useReviewStore } from 'stores';
 import { useCookies } from 'react-cookie';
 import { PostReviewResponseDto } from 'apis/response/review';
-import { PostReviewRequestDto } from 'apis/request/review';
+import { PostReviewRequestDto, PutFavoriteMedicineRequestDto } from 'apis/request/review';
 import { GetMedicineResponeDto } from "apis/response/medicine";
 import Rating from "components/Rating/Rating";
 
@@ -27,6 +27,11 @@ export default function MedicineDetail() {
   const [medicinepermissionList, setMedicinepermissionList] = useState<medicinepermissionList[]>([]);
   const [medicineinfoList, setMedicineinfoList] = useState<MedicineinfoItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [favorite, setFavorite] = useState<boolean>(false);
+  const [favoriteListItems, setFavoriteListItems] = useState<FavoriteMedicine[]>([]);
+    //state:로그인 유저 상태
+    const { loginUser } = useLoginUserStore();
+
 
   //state: 전체 댓글 개수 상태
   const [totalReviewCount, setTotalReviewCount] = useState<number>(0);
@@ -50,6 +55,7 @@ export default function MedicineDetail() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   //게시물 이미지 리스트
   const { reviewImageFileList, setReviewImageFileList } = useReviewStore();
+
 
   const toggleTab = (index: number) => {
       setToggleState(index);
@@ -159,6 +165,41 @@ const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | 
     if(!ITEM_SEQ) return;
     GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
   }
+
+const getFavoriteMedicineResponse = (responseBody: GetFavoriteMedicineResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    if(code !== 'SU') return;
+
+    const { favoriteListItems } = responseBody as GetFavoriteMedicineResponseDto;
+    setFavoriteListItems(favoriteListItems);
+
+    const favorite = favoriteListItems.findIndex(favorite => favorite.userId === loginUser?.userId) !== -1;
+    setFavorite(favorite);
+    console.log(favorite);
+    console.log(favoriteListItems)
+}  
+
+useEffect(() => {
+    getFavoriteMedicineRequest(ITEM_SEQ??'').then(getFavoriteMedicineResponse);
+}, [ITEM_SEQ]);
+
+// useEffect(() => {
+//     setFavorite(favoriteListItems.length === 0);
+//   }, [favoriteListItems]);
+
+const putFavoriteMedicineResponse = (responseBody: PutFavoriteMedicineResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    if(code === 'NU') alert('존재하지 않는 유저입니다.');
+    if(code !== 'SU') return;
+
+    if(!ITEM_SEQ) return;
+    getFavoriteMedicineRequest(ITEM_SEQ).then(getFavoriteMedicineResponse);
+}  
   
 
 //effect: 게시물 번호 path variable이 바뀔때 마다 리뷰글 불러오기
@@ -207,6 +248,23 @@ useEffect(() => {
     if(accessToken) {
       alert('리뷰 작성이 완료되었습니다!')
       postReviewRequest(ITEM_SEQ, requestBody, accessToken).then(postReviewResponse);
+    }
+  }
+
+  //관심 의약품 버튼 클릭 이벤트 처리
+  const onPutFavoriteMedicineClickHandler = () => {
+    const accessToken = cookies.accessToken;
+    console.log("관심 의약품 버튼 클릭");
+    const requestBody: PutFavoriteMedicineRequestDto = { item_NAME: medicine.item_NAME ?? "", form_CODE_NAME: medicine.form_CODE_NAME ?? "", class_NAME: medicine.class_NAME ?? "", 
+    entp_NAME: medicine.entp_NAME ?? "", etc_OTC_NAME: medicine.etc_OTC_NAME ?? "",  class_NO: medicine.class_NO ?? "", 
+    item_IMAGE: medicine.item_IMAGE ?? "", item_ENG_NAME: medicine.item_ENG_NAME ?? ""};
+    console.log("관심 의약품:", requestBody);
+
+    if (accessToken && ITEM_SEQ) {
+        putFavoriteMedicineRequest(ITEM_SEQ, requestBody, accessToken).then(putFavoriteMedicineResponse);
+
+    } else {
+        console.error("ITEM_SEQ가 유효하지 않습니다.");
     }
   }
 
@@ -390,6 +448,12 @@ const accordion = [
                           <div className='medicine-detail-content-etc'>{medicine.etc_OTC_NAME}</div>
                           <div className='medicine-detail-content-name'>{medicine.item_NAME}</div>
                           <div className='medicine-detail-content-eng-name'>{medicine.item_ENG_NAME}</div>
+                        <div className='favorite-button' onClick={onPutFavoriteMedicineClickHandler}>
+                        {favorite ?
+                            <div className='favorite-full'></div> :
+                            <div className='favorite-empty'></div>
+                        }
+                        </div>
                       </div>
                   </div>
               {/* ))} */}

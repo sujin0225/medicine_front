@@ -6,6 +6,7 @@ import GetReviewResponseDto from './get-review.response.dto';
 import PutFavoriteResponseDto from './put-helpful.response.dto';
 import GetHelpfulResponseDto from './get-helpful-list.response.dto';
 import GetFavoriteMedicineResponseDto from './get-favorite-medicine.response.dto';
+import PutFavoriteMedicineResponseDto from './put-favorite.response.dto';
 
 export type {
     GetReviewListResponseDto,
@@ -15,5 +16,6 @@ export type {
     GetReviewResponseDto,
     PutFavoriteResponseDto,
     GetHelpfulResponseDto,
-    GetFavoriteMedicineResponseDto
+    GetFavoriteMedicineResponseDto,
+    PutFavoriteMedicineResponseDto
 }

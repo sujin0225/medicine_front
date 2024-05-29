@@ -127,6 +127,14 @@
   background-image: url(assets/image/helpful-empty.png);
 }
 
+.favorite-full {
+  background-image: url(assets/image/favorite_full.png);
+}
+
+.favorite-empty {
+  background-image: url(assets/image/favorite_empty.png);
+}
+
 ::selection {
   background: #C79A9A; 
   color: #FCFCFC; 

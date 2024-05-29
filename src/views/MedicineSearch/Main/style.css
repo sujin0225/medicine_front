@@ -27,7 +27,6 @@
     background-attachment: fixed;
     background-image: url(image/search_image.jpg);
     position: relative; 
-    
 }
 
 .medicine-search-background::after {

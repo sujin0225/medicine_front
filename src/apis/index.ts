@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto, GetFavoriteMedicineResponseDto } from "./response/review"
+import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
 import { GetMedicineResponeDto } from "./response/medicine";
 import { GetSignInUserResponseDto } from "./response/user";
-import { PostReviewRequestDto, PatchReviewRequestDto } from "./request/review";
+import { PostReviewRequestDto, PatchReviewRequestDto, PutFavoriteMedicineRequestDto } from "./request/review";
 import { PostMedicineRequestDto } from "./request/medicineStore";
 import { PostSearchRequestDto } from "./request/search";
 import { ResponseDto } from "./response";
@@ -51,6 +51,7 @@ const POST_SEARCH_URL = (searchWord: string) => `${API_DOMAIN}/search/${searchWo
 const POST_MEDICINE_STORE_URL = () => `${API_DOMAIN}/medicine-stores/locations`
 const GET_MEDICINE_DETAIL_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicine/${ITEM_SEQ}`
 const GET_FAVORITE_MEDICINE_URL = () => `${API_DOMAIN}/review/favorite`
+const PUT_FAVORITE_MEDICINE_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/review/favorite/${ITEM_SEQ}`
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -306,5 +307,20 @@ export const getFavoriteMedicineRequest = async (accessToken: string) => {
         const responseBody: ResponseDto = error.response.data;
         return responseBody;
     })
+    return result;
+}
+
+//관심 의약품 저장
+export const putFavoriteMedicineRequest = async (ITEM_SEQ: string, requestBody: PutFavoriteMedicineRequestDto, accessToken: string) => {
+    const result = await axios.put(PUT_FAVORITE_MEDICINE_URL(ITEM_SEQ), requestBody, authorization(accessToken))
+    .then(response => {
+        const responseBody: PutFavoriteMedicineResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    });
     return result;
 }
