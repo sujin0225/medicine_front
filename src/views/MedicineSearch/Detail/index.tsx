@@ -29,8 +29,7 @@ export default function MedicineDetail() {
   const [totalCount, setTotalCount] = useState(0);
   const [favorite, setFavorite] = useState<boolean>(false);
   const [favoriteListItems, setFavoriteListItems] = useState<FavoriteMedicine[]>([]);
-    //state:로그인 유저 상태
-    const { loginUser } = useLoginUserStore();
+const { loginUser } = useLoginUserStore();
 
 
   //state: 전체 댓글 개수 상태
@@ -94,8 +93,6 @@ useEffect(() => {
 //   };
 
 const getMedicineResponse = (responseBody: GetMedicineResponeDto | ResponseDto | null) => {
-    // const { item_NAME, form_CODE_NAME, class_NO, class_NAME, etc_OTC_NAME, item_SEQ, entp_NAME, item_IMAGE } = responseBody as GetMedicineResponeDto;
-    // console.log(item_NAME, form_CODE_NAME, class_NO, class_NAME, etc_OTC_NAME, item_SEQ, entp_NAME, item_IMAGE);
     const medicine: Medicine = {...responseBody as GetMedicineResponeDto};
     setMedicine(medicine);
     console.log(medicine);
@@ -166,41 +163,44 @@ const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | 
     GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
   }
 
-const getFavoriteMedicineResponse = (responseBody: GetFavoriteMedicineResponseDto | ResponseDto | null) => {
-    if(!responseBody) return;
+  const getFavoriteMedicineResponse = (responseBody: GetFavoriteMedicineResponseDto | ResponseDto | null) => {
+    if (!responseBody) return;
     const { code } = responseBody;
-    if(code === 'DBE') alert('데이터베이스 오류입니다.');
-    if(code !== 'SU') return;
-
+    if (code === 'DBE') {
+      alert('데이터베이스 오류입니다.');
+      return;
+    }
+    if (code !== 'SU') return;
+  
     const { favoriteListItems } = responseBody as GetFavoriteMedicineResponseDto;
     setFavoriteListItems(favoriteListItems);
+    console.log(favoriteListItems);
 
-    const favorite = favoriteListItems.findIndex(favorite => favorite.userId === loginUser?.userId) !== -1;
-    setFavorite(favorite);
-    console.log(favorite);
-    console.log(favoriteListItems)
-}  
-
-useEffect(() => {
-    getFavoriteMedicineRequest(ITEM_SEQ??'').then(getFavoriteMedicineResponse);
-}, [ITEM_SEQ]);
-
-// useEffect(() => {
-//     setFavorite(favoriteListItems.length === 0);
-//   }, [favoriteListItems]);
+    // const isFavorite = favoriteListItems.findIndex(favorite => favorite.userId === loginUser?.userId, favorite.itemSeq ==) !== -1;
+    
+    const favoriteItem = favoriteListItems.find(favorite =>
+        favorite.userId === loginUser?.userId && favorite.itemSeq === ITEM_SEQ
+      );
+      console.log("favoriteItem:", favoriteItem);
+      
+      const isFavorite = favoriteItem !== undefined;
+      setFavorite(isFavorite);
+      console.log("isFavorite:", isFavorite);
+  };
+  
 
 const putFavoriteMedicineResponse = (responseBody: PutFavoriteMedicineResponseDto | ResponseDto | null) => {
-    if(!responseBody) return;
+    if (!responseBody) return;
     const { code } = responseBody;
 
-    if(code === 'DBE') alert('데이터베이스 오류입니다.');
-    if(code === 'NU') alert('존재하지 않는 유저입니다.');
-    if(code !== 'SU') return;
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+    if (code === 'NU') alert('존재하지 않는 유저입니다.');
+    if (code !== 'SU') return;
 
-    if(!ITEM_SEQ) return;
-    getFavoriteMedicineRequest(ITEM_SEQ).then(getFavoriteMedicineResponse);
-}  
-  
+    if (!ITEM_SEQ) return;
+    getFavoriteMedicineRequest(cookies.accessToken).then(getFavoriteMedicineResponse);
+    getMedicineRequest(ITEM_SEQ).then(getMedicineResponse);
+};
 
 //effect: 게시물 번호 path variable이 바뀔때 마다 리뷰글 불러오기
 useEffect(() => {
@@ -250,23 +250,34 @@ useEffect(() => {
       postReviewRequest(ITEM_SEQ, requestBody, accessToken).then(postReviewResponse);
     }
   }
-
+  
   //관심 의약품 버튼 클릭 이벤트 처리
   const onPutFavoriteMedicineClickHandler = () => {
     const accessToken = cookies.accessToken;
     console.log("관심 의약품 버튼 클릭");
-    const requestBody: PutFavoriteMedicineRequestDto = { item_NAME: medicine.item_NAME ?? "", form_CODE_NAME: medicine.form_CODE_NAME ?? "", class_NAME: medicine.class_NAME ?? "", 
-    entp_NAME: medicine.entp_NAME ?? "", etc_OTC_NAME: medicine.etc_OTC_NAME ?? "",  class_NO: medicine.class_NO ?? "", 
-    item_IMAGE: medicine.item_IMAGE ?? "", item_ENG_NAME: medicine.item_ENG_NAME ?? ""};
+    const requestBody = {
+        item_NAME: medicine.item_NAME ?? "",
+        form_CODE_NAME: medicine.form_CODE_NAME ?? "",
+        class_NAME: medicine.class_NAME ?? "",
+        entp_NAME: medicine.entp_NAME ?? "",
+        etc_OTC_NAME: medicine.etc_OTC_NAME ?? "",
+        class_NO: medicine.class_NO ?? "",
+        item_IMAGE: medicine.item_IMAGE ?? "",
+        item_ENG_NAME: medicine.item_ENG_NAME ?? ""
+    };
     console.log("관심 의약품:", requestBody);
 
     if (accessToken && ITEM_SEQ) {
         putFavoriteMedicineRequest(ITEM_SEQ, requestBody, accessToken).then(putFavoriteMedicineResponse);
-
     } else {
         console.error("ITEM_SEQ가 유효하지 않습니다.");
     }
-  }
+};
+
+useEffect(() => {
+    getFavoriteMedicineRequest(cookies.accessToken).then(getFavoriteMedicineResponse);
+}, [cookies.accessToken]);
+
 
   //리뷰 변경 이벤트 처리
   const onReviewChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {

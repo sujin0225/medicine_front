@@ -131,6 +131,7 @@ const gethelpfulListResponse = (responseBody: GetHelpfulResponseDto | ResponseDt
 
   const { helpfulList } = responseBody as GetHelpfulResponseDto;
   setHelpfulList(helpfulList);
+  console.log(helpfulList)
 
   if(!loginUser) {
     setHelpful(false);
