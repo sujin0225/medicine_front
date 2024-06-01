@@ -1,18 +1,12 @@
 .mypage-myreview-container {
     display: flex;
     border-bottom: 1px solid #EEEEEE;
+    cursor: pointer;
 }
 
 .mypage-myreview-text-box {
     flex: 1; 
     cursor: pointer;
-}
-
-.mypage-myreview-rating {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 10px; 
 }
 
 .star {
@@ -25,4 +19,8 @@
 .mypage-myreview-content-box {
     padding-top: 40px;
     padding-bottom: 40px;
+}
+
+.rating-container {
+    padding-bottom: 10px; 
 }
