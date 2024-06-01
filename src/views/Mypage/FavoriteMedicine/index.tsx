@@ -63,7 +63,7 @@ useEffect(() => {
           <MyMedicineItem key={index} FavoriteMedicine={FavoriteMedicine} />
           ))
           ):(
-          <div className='review-empty'>해당 의약품 리뷰가 없습니다.</div>
+          <div className='mypage-contents-empty'>관심 의약품이 없습니다.</div>
           )
           )}
           onPageChange={handlePageChange}

@@ -8,6 +8,7 @@ import HelpfulListItem from "./helpful-list-item.interface";
 import MedicineStore from "./medicine-store.interface";
 import Medicine from "./medicine.interface";
 import FavoriteMedicine from "./favorite-medicine.interface";
+import MyReview from "./myreview.interface"
 
 export type {
     User,
@@ -19,5 +20,6 @@ export type {
     HelpfulListItem,
     MedicineStore,
     Medicine,
-    FavoriteMedicine
+    FavoriteMedicine,
+    MyReview
 }

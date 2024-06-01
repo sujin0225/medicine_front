@@ -1,0 +1,28 @@
+.mypage-myreview-container {
+    display: flex;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+.mypage-myreview-text-box {
+    flex: 1; 
+    cursor: pointer;
+}
+
+.mypage-myreview-rating {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px; 
+}
+
+.star {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    display: inline-block;
+}
+
+.mypage-myreview-content-box {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}

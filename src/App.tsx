@@ -7,9 +7,10 @@ import { Route, Routes } from 'react-router-dom';
 import SignUp from 'views/Authentication/signup/signup';
 import SignIn from 'views/Authentication/signin/signin';
 import Store from 'views/MedicineStore';
-import Mypage from 'views/Mypage';
+import Mypage from 'views/Mypage/FavoriteMedicine';
+import MyReview from 'views/Mypage/MyReview';
 import MypageNavigate from 'components/MyPage_navigate';
-import { SIGN_IN_PATH, SIGN_UP_PATH, MEDICINE_SEARCH_PATH, MEDICINE_DETAIL_PATH, SEARCH_PATH, MAIN_PATH, MEDICINE_STORE_PATH, USER_PATH } from 'constant';
+import { SIGN_IN_PATH, SIGN_UP_PATH, MEDICINE_SEARCH_PATH, MEDICINE_DETAIL_PATH, SEARCH_PATH, MAIN_PATH, MEDICINE_STORE_PATH, USER_PATH, MY_REVIEW } from 'constant';
 import { useLoginUserStore } from 'stores';
 import { useEffect } from 'react';
 import MedicineSearch from 'views/MedicineSearch/Main';
@@ -65,6 +66,7 @@ function App() {
         <Route path={SIGN_UP_PATH()} element={<SignUp />} />
         <Route path={MEDICINE_STORE_PATH()} element={<Store />} />
         <Route path={USER_PATH(':userId')} element={<Mypage />} /> 
+        <Route path={MY_REVIEW(':userId')} element={<MyReview />} />
         <Route path='oauth-response/:token/:expirationTime' element={<OAuth/>} />
         {/* <Route path="/user/:username" component={MypageNavigate} /> */}
       </Route>

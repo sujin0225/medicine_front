@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto, idCheckRequestDto } from "./request/auth";
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto, GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto } from "./response/review"
+import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto,
+         GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto, GetMyReviewResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
 import { GetMedicineResponeDto } from "./response/medicine";
 import { GetSignInUserResponseDto } from "./response/user";
@@ -48,10 +49,11 @@ const PUT_HELPFUL_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review
 const GET_HELPFUL_LIST_URL = (reviewNumber: number | string) => `${API_DOMAIN}/review/helpful-list/${reviewNumber}`;
 const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
 const POST_SEARCH_URL = (searchWord: string) => `${API_DOMAIN}/search/${searchWord}`;
-const POST_MEDICINE_STORE_URL = () => `${API_DOMAIN}/medicine-stores/locations`
-const GET_MEDICINE_DETAIL_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicine/${ITEM_SEQ}`
-const GET_FAVORITE_MEDICINE_URL = () => `${API_DOMAIN}/review/favorite`
-const PUT_FAVORITE_MEDICINE_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/review/favorite/${ITEM_SEQ}`
+const POST_MEDICINE_STORE_URL = () => `${API_DOMAIN}/medicine-stores/locations`;
+const GET_MEDICINE_DETAIL_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicine/${ITEM_SEQ}`;
+const GET_FAVORITE_MEDICINE_URL = () => `${API_DOMAIN}/review/favorite`;
+const PUT_FAVORITE_MEDICINE_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/review/favorite/${ITEM_SEQ}`;
+const GET_MY_REVIEW_URL = () => `${API_DOMAIN}/review/myreview`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -322,5 +324,20 @@ export const putFavoriteMedicineRequest = async (ITEM_SEQ: string, requestBody: 
         const responseBody: ResponseDto = error.response.data;
         return responseBody;
     });
+    return result;
+}
+
+//내가 작성한 리뷰 불러오기
+export const getMyReviewRequest = async (accessToken: string) => {
+    const result = await axios.get(GET_MY_REVIEW_URL(), authorization(accessToken))
+    .then(response => {
+        const responseBody: GetMyReviewResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
     return result;
 }
