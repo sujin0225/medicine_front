@@ -4,11 +4,6 @@
     cursor: pointer;
 }
 
-.mypage-myreview-text-box {
-    flex: 1; 
-    cursor: pointer;
-}
-
 .star {
     width: 16px;
     height: 16px;

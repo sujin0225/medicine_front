@@ -73,6 +73,20 @@
     cursor: pointer;
 }
 
+.input-box-mypage-button {
+    display: flex;
+    justify-content: center; /*수평 중앙정렬*/
+    align-items: center; /*수직 중앙정렬*/
+    border-radius: 5px;
+    width: 150px;
+    height: 47px;
+    background-color: #F0F0F0;
+    color:#545454;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .input-box-button-disable {
     display: flex;
     justify-content: center; /*수평 중앙정렬*/
@@ -113,4 +127,18 @@
     font-weight: 400;
     padding-top: 15px;
     padding-bottom: 15px;
+}
+
+.input-box-email-input {
+    flex: 1;
+    border: none;
+    border: 1px solid #F0F0F0;
+    border-radius: 5px;
+    padding: 14px 0px 14px 15px;
+    outline: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #4D4D4D;
+    font-family: 'pretendard';
+    margin-bottom: 21px;
 }

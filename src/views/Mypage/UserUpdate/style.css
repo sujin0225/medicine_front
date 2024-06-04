@@ -1,0 +1,47 @@
+#mypage-update-wrapper {
+    padding: 35px 0px 133px 0px; 
+}
+
+.mypage-update-content-box-border {
+    height: 505px;
+    border: 1px solid #F5F5F5;
+    border-radius: 8px;
+}
+ 
+.mypage-update-content-box-in {
+    padding: 87px 230px 86px 230px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.mypage-update-content-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #8F8F8F;
+    flex-direction: column;
+    padding-bottom: 15px;
+}
+
+.mypage-update-content-text-delete {
+    padding-top: 35px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #8F8F8F;
+    cursor: pointer;
+}
+
+.mypage-update-button {
+  border-radius: 5px;
+  padding: 18px 40px 18px 40px;
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F0F0F0;
+  color: #545454;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
