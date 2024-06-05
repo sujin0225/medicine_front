@@ -5,8 +5,9 @@ import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDt
          GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto, GetMyReviewResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
 import { GetMedicineResponeDto } from "./response/medicine";
-import { GetSignInUserResponseDto, DeleteUserResponseDto } from "./response/user";
+import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto, PutFavoriteMedicineRequestDto } from "./request/review";
+import { PatchPasswordRequestDto } from "./request/user";
 import { PostMedicineRequestDto } from "./request/medicineStore";
 import { PostSearchRequestDto } from "./request/search";
 import { ResponseDto } from "./response";
@@ -55,6 +56,7 @@ const GET_FAVORITE_MEDICINE_URL = () => `${API_DOMAIN}/review/favorite`;
 const PUT_FAVORITE_MEDICINE_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/review/favorite/${ITEM_SEQ}`;
 const GET_MY_REVIEW_URL = () => `${API_DOMAIN}/review/myreview`;
 const DELETE_USER_URL = () => `${API_DOMAIN}/user/delete`;
+const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/patchpassword`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -348,6 +350,21 @@ export const deleteUserRequest = async (accessToken: string) => {
     const result = await axios.delete(DELETE_USER_URL(), authorization(accessToken))
     .then(response => {
         const responseBody: DeleteUserResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    });
+    return result;
+}
+
+//비밀번호 변경
+export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_PASSWORD_URL(), requestBody, authorization(accessToken))
+    .then(response => {
+        const responseBody: PatchPasswordResponseDto = response.data;
         return responseBody;
     })
     .catch(error => {

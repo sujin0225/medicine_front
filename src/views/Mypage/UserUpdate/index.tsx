@@ -3,14 +3,15 @@ import { useLoginUserStore } from 'stores'
 import MypageNavigate from 'components/MyPage_navigate';
 import InputBox from 'components/InputBox/inputbox';
 import './style.css'
-import { DeleteUserResponseDto } from 'apis/response/user';
+import { DeleteUserResponseDto, PatchPasswordResponseDto } from 'apis/response/user';
 import { useNavigate } from 'react-router-dom';
 import { ResponseDto } from 'apis/response';
 import { MAIN_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
-import { deleteUserRequest } from 'apis';
+import { deleteUserRequest, patchPasswordRequest } from 'apis';
 import { Myalert } from 'components/alert';
 import { MyalertCancle } from 'components/alert';
+import { PatchPasswordRequestDto } from 'apis/request/user';
 
 export default function UserUpdate() {
 
@@ -21,14 +22,16 @@ const passwordRef = useRef<HTMLInputElement | null>(null);
 const [emailMessage, setEmailMessage] = useState<string>('');
 const [message, setMessage] = useState<string>('');
 const [passwordMessage, setPasswordMessage] = useState<string>('');
-
+const [isPasswordCheckError, setPasswordCheckeError] = useState<boolean>(false);
 const[id,setId] = useState<string>('');
 const[password,setPassword] = useState<string>('');
 const[email,setEmail] = useState<string>('');
 const [isEmailError, setEmailError] = useState<boolean>(false);
 const [isPasswordError, setPasswordError] = useState<boolean>(false);
-
+const[passwordCheck,setPasswordCheck] = useState<string>('');
+const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>('');
 const passwordCheckRef = useRef<HTMLInputElement | null>(null);
+const [showPasswordCheck, setShowPasswordCheck] = useState(false);
 const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/; 
 const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()\-_=+\[{\]};:'",<.>/?])[a-zA-Z0-9!@#$%^&*()\-_=+\[{\]};:'",<.>/?]{8,12}$/;
 
@@ -59,33 +62,41 @@ const onEmailButtonClickHandler = () => {
   }
 }
 
-//비밀번호 변경 버튼 클릭 event handler
-const onPasswordClickHandler = () => {
-  if(!id || !email) return;
-  const passwordCheck = passwordPattern.test(password);
-  if(!passwordCheck) {
-      setEmailError(true);
-      setEmailMessage('비밀번호 형식이 아닙니다.');
-      return;
-  }
-}
-
 const onEmailKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
   if (event.key !== 'Enter') return;
   onEmailButtonClickHandler();
 }
 
 //비밀번호 변경 event handler
+// const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+//   const { value } = event.target;
+//   setPassword(value);
+//   setMessage('');
+// };  
 const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
   const { value } = event.target;
   setPassword(value);
-  setMessage('');
-};  
+  // 비밀번호 입력 시 비밀번호 확인 입력창 표시
+  setShowPasswordCheck(value.length > 0);
+};
 
 const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
   if (event.key !== 'Enter') return;
   if (!passwordCheckRef.current) return;
   passwordCheckRef.current.focus();
+}
+
+//비밀번호 수정 클릭 이벤트 처리 event handler
+const onPasswordButtonClickHandler = () => {
+  if (!loginUser || !cookies.accessToken) return;
+  const passwordCheck = passwordPattern.test(password);
+  if(!passwordCheck) {
+    setPasswordError(true);
+    setPasswordMessage('비밀번호 형식이 아닙니다.');
+    return;
+}
+  const requestBody: PatchPasswordRequestDto = { password }
+  patchPasswordRequest(requestBody, cookies.accessToken).then(patchPasswordResponse);
 }
 
 //삭제 버튼 클릭 이벤트 처리 event handler
@@ -98,6 +109,12 @@ const onDeleteButtonClickHandler = () => {
       }
     });
 }
+
+const onPasswordCheckChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const { value } = event.target;
+  setPasswordCheck(value);
+  setPasswordCheckMessage('');
+};
 
 //delete user response 처리 함수
 const deleteUserResponse = async (responseBody: DeleteUserResponseDto | ResponseDto | null) => {
@@ -117,6 +134,21 @@ const deleteUserResponse = async (responseBody: DeleteUserResponseDto | Response
   navigate(MAIN_PATH());
 }
 
+//patch password response 처리 함수
+const patchPasswordResponse = async (responseBody: PatchPasswordResponseDto | ResponseDto | null) => {
+  if(!responseBody) return;
+  const { code } = responseBody;
+
+  if(code === 'VF') alert('잘못된 접근입니다.');
+  if(code === 'NU') alert('존재하지 않는 유저입니다.');
+  if(code === 'AF') alert('인증에 실패했습니다.');
+  if(code === 'DBE') alert('데이터베이스 오류입니다.');
+  if(code !== 'SU') return;
+  if(code === 'SU')
+    Myalert("success", "비밀번호 변경", "비밀번호 변경이 완료되었습니다.", "확인");
+  
+  // patchPasswordRequest(cookies.accessToken).then(patchPasswordResponse);
+}
 
 return (
 <div id='mypage-wrapper'>
@@ -134,8 +166,13 @@ return (
             <div className='mypage-update-content-text'>이메일</div>
             <InputBox ref={emailRef} title='이메일' placeholder='이메일' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={emailMessage} buttonTitle='이메일 변경' isMypage={true} onButtonClick={onEmailButtonClickHandler} onKeydown={onEmailKeyDownHandler}/>
             <div className='mypage-update-content-text'>비밀번호</div>
-            <InputBox ref={passwordRef} title='비밀번호' placeholder='비밀번호' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} buttonTitle='비밀번호 변경' isMypage={true} onButtonClick={onPasswordClickHandler} onKeydown={onPasswordKeyDownHandler}/>
-            <div className='primary-button-lg full-width'>수정완료</div>
+            <InputBox ref={passwordRef} title='비밀번호' placeholder='변경할 비밀번호를 입력해 주세요.' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} isMypage={true} onKeydown={onPasswordKeyDownHandler}/>
+            {showPasswordCheck && (
+          <>
+          <InputBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호 확인' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isMypage={true} />
+          <div className='primary-button-lg full-width' onClick={onPasswordButtonClickHandler}>수정완료</div>
+          </>
+          )}
             <div className='mypage-update-content-text-delete' onClick={onDeleteButtonClickHandler}>회원 탈퇴하기</div>
             </div>
           </div>

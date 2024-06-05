@@ -25,9 +25,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
   // const MybuttonClass = isMypage ? 'input-box-mypage-button' : 'input-box-button-disable';
   // const inputBoxInputClass = isSignUp ? 'input-box-input' : 'input-box-login-input';
   const inputBoxContentClass = isSignUp ? 'input-box-content' : 'input-box-content-login';
-  const inputBoxInputClass = isMypage 
-  ? 'input-box-email-input' 
-  : (isSignUp ? 'input-box-input' : 'input-box-login-input');
+  const inputBoxInputClass = isMypage ? 'input-box-email-input' : (isSignUp ? 'input-box-input' : 'input-box-login-input');
 
   return(
     <div className='input-box'>
