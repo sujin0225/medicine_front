@@ -9,6 +9,8 @@ import { ResponseDto } from 'apis/response';
 import { MAIN_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
 import { deleteUserRequest } from 'apis';
+import { Myalert } from 'components/alert';
+import { MyalertCancle } from 'components/alert';
 
 export default function UserUpdate() {
 
@@ -88,24 +90,33 @@ const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
 
 //삭제 버튼 클릭 이벤트 처리 event handler
 const onDeleteButtonClickHandler = () => {
-  if(!loginUser || !cookies.accessToken) return;
-  deleteUserRequest(cookies.accessToken).then(deleteUserResponse);
+  if (!loginUser || !cookies.accessToken) return;
+  MyalertCancle("warning", "회원탈퇴 안내", "회원탈퇴 하시면, 이게머약?과 함께한 모든 데이터가 삭제됩니다. 그래도 정말로 탈퇴하시겠습니까?", "취소", "확인")
+    .then((result) => {
+      if (result.isConfirmed) {
+        deleteUserRequest(cookies.accessToken).then(deleteUserResponse);
+      }
+    });
 }
 
 //delete user response 처리 함수
-const deleteUserResponse = (responseBody: DeleteUserResponseDto | ResponseDto | null) => {
-  if(!responseBody) return;
+const deleteUserResponse = async (responseBody: DeleteUserResponseDto | ResponseDto | null) => {
+  if (!responseBody) return;
   const { code } = responseBody;
-  if(code === 'VF') alert('잘못된 접근입니다.');
-  if(code === 'DBE') alert('데이터베이스 오류입니다.');
-  if(code !== 'SU') alert('회원 탈퇴에 실패했습니다.'); 
-  if(code === 'SU') alert('회원 탈퇴 하시겠습니까?'); 
-  if(code === 'SU') alert('회원 탈퇴 되었습니다.'); 
-
+  
+  if (code === 'VF') 
+    alert('잘못된 접근입니다.');
+  if (code === 'DBE') 
+    alert('데이터베이스 오류입니다.');
+  if (code !== 'SU') 
+    alert('회원 탈퇴에 실패했습니다.');
+  if (code === 'SU')
+    Myalert("success", "회원탈퇴 안내", "탈퇴 처리 되었습니다. 이용해 주셔서 감사합니다.", "확인");
   resetLoginUser();
-  setCookies('accessToken', '', { path: MAIN_PATH(), expires: new Date() })
+  setCookies('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
   navigate(MAIN_PATH());
 }
+
 
 return (
 <div id='mypage-wrapper'>

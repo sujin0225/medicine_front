@@ -8,6 +8,7 @@ import { IdCheckResponseDto, EmailCertificationResponseDto, CheckCertificationRe
 import { ResponseDto } from 'apis/response';
 import { ResponseCode } from 'types/enums';
 import { ResponseBody } from 'types';
+import { Myalert } from 'components/alert';
 
 export default function SignIn() {
 
@@ -125,7 +126,7 @@ const signUpResponse = (responseBody: ResponseBody<SignUpResponseDto>) => {
   if(code !== ResponseCode.SUCCESS) return;
 
   if (code === ResponseCode.SUCCESS) {
-    alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
+    Myalert("success", "환영합니다!", "이게머약? 회원이 되어주셔서 감사합니다. \n 로그인 페이지로 이동합니다.", "확인");
     navigate('/auth/signin');
   }
 };
