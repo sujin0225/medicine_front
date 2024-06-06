@@ -5,9 +5,9 @@ import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDt
          GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto, GetMyReviewResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
 import { GetMedicineResponeDto } from "./response/medicine";
-import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto } from "./response/user";
+import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto, UpdateEmailCertificationResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto, PutFavoriteMedicineRequestDto } from "./request/review";
-import { PatchPasswordRequestDto } from "./request/user";
+import { PatchPasswordRequestDto, UpdateEmailCertificationRequestDto } from "./request/user";
 import { PostMedicineRequestDto } from "./request/medicineStore";
 import { PostSearchRequestDto } from "./request/search";
 import { ResponseDto } from "./response";
@@ -57,6 +57,7 @@ const PUT_FAVORITE_MEDICINE_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/review/fa
 const GET_MY_REVIEW_URL = () => `${API_DOMAIN}/review/myreview`;
 const DELETE_USER_URL = () => `${API_DOMAIN}/user/delete`;
 const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/patchpassword`;
+const UPDATE_EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/user/update-email-certification`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -67,12 +68,20 @@ export const idCheckRequest = async (requestBody: idCheckRequestDto) => {
     return result;    
 };
 
-//이메일 인증
+//이메일 인증 번호 전송
 export const emailCertificationRequest = async (requestBody: EmailCertificationRequestDto) => {
     const result = await axios.post(EMAIL_CERTIFICATION_URL(), requestBody)
         .then(responseHandler<EmailCertificationResponseDto>)
         .catch(errorHandler);
     return result;
+}
+
+//이메일 변경 시 인증 번호 전송
+export const updateEmailCertificationRequest = async (requestBody: UpdateEmailCertificationRequestDto) => {
+    const result = await axios.post(UPDATE_EMAIL_CERTIFICATION_URL(), requestBody)
+        .then(responseHandler<UpdateEmailCertificationResponseDto>)
+        .catch(errorHandler);
+    return result;    
 }
 
 //인증 번호 확인

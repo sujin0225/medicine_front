@@ -45,3 +45,56 @@
   cursor: pointer;
   margin-top: 10px;
 }
+
+.mypage-email-button-disable {
+    display: flex;
+    justify-content: center; /*수평 중앙정렬*/
+    align-items: center; /*수직 중앙정렬*/
+    border-radius: 5px;
+    width: 150px;
+    height: 47px;
+    background-color: #F0F0F0;
+    color:#545454;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.mypage-email-button-disable:hover {
+    background-color: #BBB9B6;
+    color: #FCFCFC;
+    transition : 0.5s;
+}
+
+.mypage-email-input {
+    flex: 1;
+    border: none;
+    border: 1px solid #F0F0F0;
+    border-radius: 5px;
+    padding: 14px 0px 14px 15px;
+    outline: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #4D4D4D;
+    font-family: 'pretendard';
+    margin-bottom: 10px;
+}
+
+.mypage-input-button-box {
+    display: flex;
+    gap: 20px;
+}
+
+.mypage-email-button {
+    display: flex;
+    justify-content: center; /*수평 중앙정렬*/
+    align-items: center; /*수직 중앙정렬*/
+    border-radius: 5px;
+    width: 150px;
+    height: 47px;
+    background-color: #BBB9B6;
+    color:#FCFCFC;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}

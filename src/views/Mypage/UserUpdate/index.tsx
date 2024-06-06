@@ -1,17 +1,20 @@
-import { useRef, useState, ChangeEvent, KeyboardEvent } from 'react';
+import { useRef, useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
 import { useLoginUserStore } from 'stores'
 import MypageNavigate from 'components/MyPage_navigate';
 import InputBox from 'components/InputBox/inputbox';
 import './style.css'
-import { DeleteUserResponseDto, PatchPasswordResponseDto } from 'apis/response/user';
+import { DeleteUserResponseDto, GetSignInUserResponseDto, PatchPasswordResponseDto, UpdateEmailCertificationResponseDto } from 'apis/response/user';
 import { useNavigate } from 'react-router-dom';
 import { ResponseDto } from 'apis/response';
 import { MAIN_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
-import { deleteUserRequest, patchPasswordRequest } from 'apis';
+import { deleteUserRequest, getSignInUserRequest, patchPasswordRequest, updateEmailCertificationRequest } from 'apis';
 import { Myalert } from 'components/alert';
 import { MyalertCancle } from 'components/alert';
-import { PatchPasswordRequestDto } from 'apis/request/user';
+import { PatchPasswordRequestDto, UpdateEmailCertificationRequestDto } from 'apis/request/user';
+import { User } from 'types/interface';
+import { ResponseBody } from 'types';
+import { ResponseCode } from 'types/enums';
 
 export default function UserUpdate() {
 
@@ -23,16 +26,24 @@ const [emailMessage, setEmailMessage] = useState<string>('');
 const [message, setMessage] = useState<string>('');
 const [passwordMessage, setPasswordMessage] = useState<string>('');
 const [isPasswordCheckError, setPasswordCheckeError] = useState<boolean>(false);
-const[id,setId] = useState<string>('');
-const[password,setPassword] = useState<string>('');
-const[email,setEmail] = useState<string>('');
+const [id,setId] = useState<string>('');
+const [password,setPassword] = useState<string>('');
+const [email,setEmail] = useState<string>('');
 const [isEmailError, setEmailError] = useState<boolean>(false);
 const [isPasswordError, setPasswordError] = useState<boolean>(false);
-const[passwordCheck,setPasswordCheck] = useState<string>('');
+const [passwordCheck,setPasswordCheck] = useState<string>('');
 const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>('');
+const [showEmail, setShowEmail] = useState<boolean>(false);
+const [userInfo, setUserInfo] = useState<User>({} as User);
 const passwordCheckRef = useRef<HTMLInputElement | null>(null);
 const [showPasswordCheck, setShowPasswordCheck] = useState(false);
-const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/; 
+const certificationNumberRef = useRef<HTMLInputElement | null>(null);
+const [certificationNumber,setCertificationNumber] = useState<string>('');
+const [isCertificationNumberError, setCertificationNumberError] = useState<boolean>(false);
+const [certificationNumberMessage, setCertificationNumberMessage] = useState<string>('');
+const [isCertificationCheck, setCertificationCheck] = useState<boolean>(false);
+// const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/; 
+const emailPattern = /^[a-zA-Z0-9._-]+@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
 const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()\-_=+\[{\]};:'",<.>/?])[a-zA-Z0-9!@#$%^&*()\-_=+\[{\]};:'",<.>/?]{8,12}$/;
 
 //function: 네비게이트 함수
@@ -52,14 +63,21 @@ const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
 };
 
 //이메일 버튼 클릭 event handler
-const onEmailButtonClickHandler = () => {
-  if(!id || !email) return;
+const onUpdateEmailButtonClickHandler = () => {
+  if (!loginUser || !cookies.accessToken || !email) return;
+  
   const checkedEmail = emailPattern.test(email);
-  if(!checkedEmail) {
+  if (!checkedEmail) {
       setEmailError(true);
       setEmailMessage('이메일 형식이 아닙니다.');
       return;
   }
+
+  const requestBody: UpdateEmailCertificationRequestDto = { id: loginUser.userId, email }; // loginUser 객체에서 id 추출
+  updateEmailCertificationRequest(requestBody).then(updateEmailCertificationResponse);
+
+  setEmailError(false);
+  setEmailMessage('이메일 전송중...');
 }
 
 const onEmailKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -67,12 +85,7 @@ const onEmailKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
   onEmailButtonClickHandler();
 }
 
-//비밀번호 변경 event handler
-// const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-//   const { value } = event.target;
-//   setPassword(value);
-//   setMessage('');
-// };  
+//비밀번호 변경 event handler 
 const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
   const { value } = event.target;
   setPassword(value);
@@ -116,6 +129,59 @@ const onPasswordCheckChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
   setPasswordCheckMessage('');
 };
 
+//이메일 변경 버튼 클릭 이벤트 처리
+const onEmailButtonClickHandler = () => {
+  setShowEmail(!showEmail);
+}
+
+const onCertificationNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const { value } = event.target;
+  setCertificationNumber(value);
+  setCertificationNumberMessage('');
+};
+
+  //이메일 인증
+  const updateEmailCertificationResponse = (responseBody: ResponseBody<UpdateEmailCertificationResponseDto>) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === ResponseCode.MAIL_FAIL) alert('이메일 전송에 실패했습니다.');
+    if(code === ResponseCode.DATABASE_ERROR) alert('데이터베이스 오류입니다.');
+    if(code !== ResponseCode.SUCCESS) return;
+
+    setEmailError(false);
+    setEmailMessage('인증번호가 전송되었습니다.');
+};
+
+//인증번호 버튼 클릭 이벤트
+// const onCertificationNumberButtonClickHandler = () => {
+//   if(!id || !email || !certificationNumber) return;
+//   const requestBody: CheckCertificationRequestDto = { id, email, certificationNumber }
+//   updateEmailCertificationRequest(requestBody).then(updateCheckCertificationResponse);
+// };
+
+// const onCertificationNumberKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+//   if (event.key !== 'Enter') return;
+//   onCertificationNumberButtonClickHandler();
+// }
+
+//인증 번호 확인
+// const updateCheckCertificationResponse = (responseBody: ResponseBody<CheckCertificationResponseDto>) => {
+//   if(!responseBody) return;
+//   const { code } = responseBody;
+//   if(code === ResponseCode.VALIDATION_FAIL) alert('아이디, 이메일, 인증번호를 모두 입력하세요.');
+//   if(code === ResponseCode.CERTIFICATION_FAIL) {
+//       setCertificationNumberError(true);
+//       setCertificationNumberMessage('인증번호가 일치하지 않습니다.');
+//       setCertificationCheck(false);
+//   }
+//   if(code === ResponseCode.DATABASE_ERROR) alert('데이터베이스 오류입니다.');
+//   if(code !== ResponseCode.SUCCESS) return;
+
+//   setCertificationNumberError(false);
+//   setCertificationNumberMessage('인증번호가 확인되었습니다.');
+//   setCertificationCheck(true);
+// };
+
 //delete user response 처리 함수
 const deleteUserResponse = async (responseBody: DeleteUserResponseDto | ResponseDto | null) => {
   if (!responseBody) return;
@@ -146,9 +212,21 @@ const patchPasswordResponse = async (responseBody: PatchPasswordResponseDto | Re
   if(code !== 'SU') return;
   if(code === 'SU')
     Myalert("success", "비밀번호 변경", "비밀번호 변경이 완료되었습니다.", "확인");
-  
-  // patchPasswordRequest(cookies.accessToken).then(patchPasswordResponse);
 }
+
+//get user response 처리 함수
+const getSignInUserResponse = async (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
+  const userInfo: User = { ...responseBody as GetSignInUserResponseDto};
+  // console.log(userId, email);
+  setUserInfo(userInfo);
+  console.log(userInfo)
+}
+
+const validUserId = userId ?? "defaultUserId";
+
+useEffect(() => {
+  getSignInUserRequest(validUserId, cookies.accessToken).then(getSignInUserResponse);
+}, [cookies.accessToken]);
 
 return (
 <div id='mypage-wrapper'>
@@ -164,15 +242,29 @@ return (
           <div className='mypage-update-content-box-border'>
             <div className='mypage-update-content-box-in'>
             <div className='mypage-update-content-text'>이메일</div>
-            <InputBox ref={emailRef} title='이메일' placeholder='이메일' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={emailMessage} buttonTitle='이메일 변경' isMypage={true} onButtonClick={onEmailButtonClickHandler} onKeydown={onEmailKeyDownHandler}/>
+            <div className='mypage-input-button-box'>
+              <div className='mypage-email-input'>{userInfo.email}</div>
+              <div className='button' onClick={onEmailButtonClickHandler}>
+              {
+                showEmail ? <div className='mypage-email-button'>이메일 변경</div> : <div className='mypage-email-button-disable'>이메일 변경</div>
+              }
+              </div>
+            </div>
+            {
+                showEmail && 
+                <>
+                <InputBox ref={emailRef} title='이메일' placeholder='변경할 이메일을 입력해주세요.' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={emailMessage} buttonTitle='이메일 전송' isMypage={true} onButtonClick={onUpdateEmailButtonClickHandler} onKeydown={onEmailKeyDownHandler}/>
+                {/* <InputBox ref={certificationNumberRef} title='인증번호' placeholder='인증번호 4자리를 입력해주세요' type='text' value={certificationNumber} onChange={onCertificationNumberChangeHandler} isErrorMessage={isCertificationNumberError} message={certificationNumberMessage} buttonTitle='인증 확인' onButtonClick={onCertificationNumberButtonClickHandler} isSignUp={true} onKeydown={onCertificationNumberKeyDownHandler}/> */}
+                </>
+              }
             <div className='mypage-update-content-text'>비밀번호</div>
             <InputBox ref={passwordRef} title='비밀번호' placeholder='변경할 비밀번호를 입력해 주세요.' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} isMypage={true} onKeydown={onPasswordKeyDownHandler}/>
             {showPasswordCheck && (
-          <>
-          <InputBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호 확인' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isMypage={true} />
-          <div className='primary-button-lg full-width' onClick={onPasswordButtonClickHandler}>수정완료</div>
-          </>
-          )}
+            <>
+            <InputBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호 확인' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isMypage={true} />
+            <div className='primary-button-lg full-width' onClick={onPasswordButtonClickHandler}>수정완료</div>
+            </>
+            )}
             <div className='mypage-update-content-text-delete' onClick={onDeleteButtonClickHandler}>회원 탈퇴하기</div>
             </div>
           </div>
