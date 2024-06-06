@@ -3,7 +3,7 @@
 }
 
 .mypage-update-content-box-border {
-    height: 505px;
+    /* height: 505px; */
     border: 1px solid #F5F5F5;
     border-radius: 8px;
 }
@@ -20,6 +20,7 @@
     font-weight: 600;
     color: #8F8F8F;
     flex-direction: column;
+    padding-top: 38px;
     padding-bottom: 15px;
 }
 
@@ -29,6 +30,7 @@
     font-weight: 500;
     color: #8F8F8F;
     cursor: pointer;
+    padding-bottom: 38px;
 }
 
 .mypage-update-button {
@@ -77,7 +79,7 @@
     font-weight: 400;
     color: #4D4D4D;
     font-family: 'pretendard';
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .mypage-input-button-box {

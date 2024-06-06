@@ -5,9 +5,9 @@ import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDt
          GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto, GetMyReviewResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
 import { GetMedicineResponeDto } from "./response/medicine";
-import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto, UpdateEmailCertificationResponseDto } from "./response/user";
+import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto, UpdateEmailCertificationResponseDto, UpdateEmailResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto, PutFavoriteMedicineRequestDto } from "./request/review";
-import { PatchPasswordRequestDto, UpdateEmailCertificationRequestDto } from "./request/user";
+import { PatchPasswordRequestDto, UpdateEmailCertificationRequestDto, UpdateEmailRequestDto } from "./request/user";
 import { PostMedicineRequestDto } from "./request/medicineStore";
 import { PostSearchRequestDto } from "./request/search";
 import { ResponseDto } from "./response";
@@ -58,6 +58,7 @@ const GET_MY_REVIEW_URL = () => `${API_DOMAIN}/review/myreview`;
 const DELETE_USER_URL = () => `${API_DOMAIN}/user/delete`;
 const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/patchpassword`;
 const UPDATE_EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/user/update-email-certification`;
+const UPDATE_CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/user/patchEmail`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -154,6 +155,30 @@ export const postReviewRequest = async (ITEM_SEQ: number | string, requestBody: 
         });
     return result;    
 }
+
+
+//인증 번호 확인 및 이메일 변경
+// export const updateEmailRequest = async (requestBody: UpdateEmailRequestDto, accessToken: string) => {
+//     const result = await axios.patch(UPDATE_CHECK_CERTIFICATION_URL(), requestBody, authorization(accessToken))
+//         .then(responseHandler<UpdateEmailResponseDto>)
+//         .catch(errorHandler);
+//     return result;
+// };
+export const updateEmailRequest = async (requestBody: UpdateEmailRequestDto, accessToken: string) => {
+    const result = await axios.patch(UPDATE_CHECK_CERTIFICATION_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: UpdateEmailResponseDto = response.data;
+            console.log("Review posted successfully:", responseBody);
+            return responseBody;
+        })
+        .catch(error => {
+            console.error("Review submission error:", error);
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+};
 
 //이미지 업로드
 export const fileuploadRequest = async(data: FormData) => {
