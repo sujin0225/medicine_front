@@ -192,7 +192,6 @@ const updateEmailResponse = (responseBody: ResponseBody<UpdateEmailResponseDto>)
   if(code !== ResponseCode.SUCCESS) return;
 
   setCertificationNumberError(false);
-  // setCertificationNumberMessage('인증번호가 확인되었습니다.');
   setCertificationCheck(true);
   Myalert("success", "이메일 변경", "이메일 변경이 완료되었습니다.", "확인");
   getSignInUserRequest(validUserId, cookies.accessToken).then(getSignInUserResponse);

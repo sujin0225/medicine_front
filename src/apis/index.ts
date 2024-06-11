@@ -4,10 +4,11 @@ import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckRe
 import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto,
          GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto, GetMyReviewResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
-import { GetMedicineResponeDto } from "./response/medicine";
+import { GetMedicineResponeDto, GetMedicinePermissionResponseDto, GetMedicineInfoResponseDto } from "./response/medicine";
 import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto, UpdateEmailCertificationResponseDto, UpdateEmailResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto, PutFavoriteMedicineRequestDto } from "./request/review";
 import { PatchPasswordRequestDto, UpdateEmailCertificationRequestDto, UpdateEmailRequestDto } from "./request/user";
+import { PostMedicineStoreResponseDto } from "./response/medicineStore";
 import { PostMedicineRequestDto } from "./request/medicineStore";
 import { PostSearchRequestDto } from "./request/search";
 import { ResponseDto } from "./response";
@@ -59,6 +60,8 @@ const DELETE_USER_URL = () => `${API_DOMAIN}/user/delete`;
 const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/user/patchpassword`;
 const UPDATE_EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/user/update-email-certification`;
 const UPDATE_CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/user/patchEmail`;
+const GET_MEDICINE_PERMISSION_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicinePermission/${ITEM_SEQ}`;
+const GET_MEDICINE_INFO_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicineInfo/${ITEM_SEQ}`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -156,14 +159,7 @@ export const postReviewRequest = async (ITEM_SEQ: number | string, requestBody: 
     return result;    
 }
 
-
 //인증 번호 확인 및 이메일 변경
-// export const updateEmailRequest = async (requestBody: UpdateEmailRequestDto, accessToken: string) => {
-//     const result = await axios.patch(UPDATE_CHECK_CERTIFICATION_URL(), requestBody, authorization(accessToken))
-//         .then(responseHandler<UpdateEmailResponseDto>)
-//         .catch(errorHandler);
-//     return result;
-// };
 export const updateEmailRequest = async (requestBody: UpdateEmailRequestDto, accessToken: string) => {
     const result = await axios.patch(UPDATE_CHECK_CERTIFICATION_URL(), requestBody, authorization(accessToken))
         .then(response => {
@@ -306,7 +302,7 @@ export const getPopularListRequest = async () => {
 export const postMedicineStoreRequest = async (requestBody: PostMedicineRequestDto) => {
     const result = await axios.post(POST_MEDICINE_STORE_URL(), requestBody)
         .then(response => {
-            const responseBody: PostMedicineResponseDto = response.data;
+            const responseBody: PostMedicineStoreResponseDto = response.data;
             console.log("사용자 근처 의약품 판매처: ", responseBody);
             return responseBody;
         })
@@ -324,6 +320,36 @@ export const getMedicineRequest = async (ITEM_SEQ: string) => {
     const result = await axios.get(GET_MEDICINE_DETAIL_URL(ITEM_SEQ))
     .then(response => {
         const responseBody: GetMedicineResponeDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+
+//의약품 제품 허가정보 불러오기
+export const getMedicinePermissionRequest = async (ITEM_SEQ: string) => {
+    const result = await axios.get(GET_MEDICINE_PERMISSION_URL(ITEM_SEQ))
+    .then(response => {
+        const responseBody: GetMedicinePermissionResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+
+//의약품 복약정보 불러오기
+export const getMedicineInfoRequest = async (ITEM_SEQ: string) => {
+    const result = await axios.get(GET_MEDICINE_INFO_URL(ITEM_SEQ))
+    .then(response => {
+        const responseBody: GetMedicineInfoResponseDto = response.data;
         return responseBody;
     })
     .catch(error => {

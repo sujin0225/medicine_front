@@ -128,6 +128,7 @@ const gethelpfulListResponse = (responseBody: GetHelpfulResponseDto | ResponseDt
     return;
   }
   if(code !== 'SU') return;
+  console.log(code)
 
   const { helpfulList } = responseBody as GetHelpfulResponseDto;
   setHelpfulList(helpfulList);

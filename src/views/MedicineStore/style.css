@@ -90,9 +90,16 @@
     padding:31px 0px 133px 0px;
 }
 
+.map-content-gap {
+    display: flex;
+  padding: 31px 0px 133px 0px;
+  width: 100%;
+  justify-content: space-between;
+}
+
 #map {
-    width: 1295px;
-    height: 506px;
+    width: 667px;
+    height: 260px;
     border-radius: 16px;
     margin-top: 35px;
 }

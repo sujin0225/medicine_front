@@ -4,9 +4,8 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Search from 'components/Search/Search';
 import markerImage from './image/marker.png';
-import { medicinestore } from 'publicapi';
 import { MedicineStore } from 'types/interface';
-import { PostMedicineResponseDto } from 'apis/response/medicineStore';
+import { PostMedicineStoreResponseDto } from 'apis/response/medicineStore';
 import { PostMedicineRequestDto } from 'apis/request/medicineStore';
 import proj4 from 'proj4';
 import { ResponseDto } from 'apis/response';
@@ -71,13 +70,39 @@ export default function Store() {
 //   }
 // };
 
-const postMedicineStoreResponse = (responseBody: PostMedicineResponseDto | ResponseDto | null) => {
-  if(!responseBody) return;
-  const { code } = responseBody;
+// const postMedicineStoreResponse = (responseBody: PostMedicineStoreResponseDto | ResponseDto | null) => {
+//   if (!responseBody) {
+//     console.log("responseBody가 null입니다.");
+//     return;
+//   }
 
-  if(code === 'DBE') alert('데이터베이스 오류입니다.');
-  console.log(code);
-  if(code !== 'SU') return;
+//     const { medicineStore } = responseBody as PostMedicineStoreResponseDto;
+//     setMedicineStore(medicineStore);
+//     console.log("콘솔에 찍기:", medicineStore);
+// }
+
+
+const postMedicineStoreResponse = (responseBody: any) => {
+  if (!responseBody || !Array.isArray(responseBody)) {
+    console.log("responseBody가 null이거나 배열이 아닙니다.");
+    return;
+  }
+
+  // responseBody 배열의 각 요소를 MedicineStore 객체로 변환
+  const medicineStores: MedicineStore[] = responseBody.map((item: any) => ({
+    MGTNO: item.MGTNO,
+    TRDSTATENM: item.TRDSTATENM,
+    DTLSTATENM: item.DTLSTATENM,
+    BPLCNM: item.BPLCNM,
+    X: item.X,
+    Y: item.Y,
+  }));
+
+  // 변환된 배열을 setMedicineStore 함수에 전달
+  setMedicineStore(medicineStores);
+
+  // 변환된 배열을 콘솔에 출력
+  console.log("MedicineStore 배열:", medicineStores);
 }
 
 // useEffect(() => {
@@ -225,6 +250,63 @@ const handleConvert = () => {
 
 const [marker, setMarker] = useState(null);
 
+// useEffect(() => {
+//   const container = document.getElementById('map');
+//   navigator.geolocation.getCurrentPosition(
+//     (position) => {
+//       const { latitude, longitude } = position.coords;
+//       const options = {
+//         center: new kakao.maps.LatLng(latitude, longitude),
+//         level: 3
+//       };
+//       const mapInstance = new kakao.maps.Map(container, options);
+//       setMap(mapInstance);
+
+//       console.log("초기 지도 중심 좌표: ", latitude, longitude);
+
+//       kakao.maps.event.addListener(mapInstance, 'dragend', function() {
+//         const center = mapInstance.getCenter();
+//         const lat = center.getLat();
+//         const lng = center.getLng();
+//         console.log("드래그 후 지도 중심 좌표: ", lat, lng);
+        
+//         const requestBody = { X: lat, Y: lng };
+//         console.log("API 요청 좌표: ", requestBody);
+        
+//         postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
+
+//         // 기존 마커 제거
+//         // if (marker) {
+//         //   marker.setMap(null);
+//         // }
+
+//         // 새로운 마커 추가
+//         const newMarker = new kakao.maps.Marker({
+//           position: new kakao.maps.LatLng(lat, lng),
+//           image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
+//             offset: new kakao.maps.Point(25, 50),
+//           })   
+//         });
+//         newMarker.setMap(mapInstance);
+//         setMarker(newMarker);
+
+//         // 필요하다면, 여기서 지도 마커와 정보를 업데이트하는 로직을 추가
+//         // const infowindow = new kakao.maps.InfoWindow({
+//         //   content: name, 
+//         // });
+//       });
+//     },
+//     (error) => {
+//       console.error("Geolocation error: ", error);
+//     },
+//     {
+//       enableHighAccuracy: true,
+//       timeout: 5000,
+//       maximumAge: 0
+//     }
+//   );
+// }, []);
+
 useEffect(() => {
   const container = document.getElementById('map');
   navigator.geolocation.getCurrentPosition(
@@ -239,37 +321,21 @@ useEffect(() => {
 
       console.log("초기 지도 중심 좌표: ", latitude, longitude);
 
-      kakao.maps.event.addListener(mapInstance, 'dragend', function() {
-        const center = mapInstance.getCenter();
-        const lat = center.getLat();
-        const lng = center.getLng();
-        console.log("드래그 후 지도 중심 좌표: ", lat, lng);
-        
-        const requestBody = { X: lat, Y: lng };
-        console.log("API 요청 좌표: ", requestBody);
-        
-        postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
+      // 초기 위치에서 API 요청
+      // const requestBody = { X: latitude, Y: longitude };
+      const requestBody: PostMedicineRequestDto = { X: latitude, Y: longitude };
+      console.log("API 요청 좌표: ", requestBody);
+      postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
 
-        // 기존 마커 제거
-        // if (marker) {
-        //   marker.setMap(null);
-        // }
-
-        // 새로운 마커 추가
-        const newMarker = new kakao.maps.Marker({
-          position: new kakao.maps.LatLng(lat, lng),
-          image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
-            offset: new kakao.maps.Point(25, 50),
-          })   
-        });
-        newMarker.setMap(mapInstance);
-        setMarker(newMarker);
-
-        // 필요하다면, 여기서 지도 마커와 정보를 업데이트하는 로직을 추가
-        // const infowindow = new kakao.maps.InfoWindow({
-        //   content: name, 
-        // });
+      // 초기 마커 설정
+      const marker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(latitude, longitude),
+        image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
+          offset: new kakao.maps.Point(25, 50),
+        })
       });
+      marker.setMap(mapInstance);
+      setMarker(marker);
     },
     (error) => {
       console.error("Geolocation error: ", error);
@@ -281,7 +347,6 @@ useEffect(() => {
     }
   );
 }, []);
-
 
   return (
     <>
@@ -331,9 +396,18 @@ useEffect(() => {
     </div>
     <div id='store'>
       <div className='store-map-container'>
-        <Search />
-        <div id="map"></div>
+        <div className='map-content-gap'>
+      <div id="map"></div>
+      <div className="store-content">
+      {medicineStore.map((store, index) => (
+    <div key={index}>
+      {store.BPLCNM}
+      {store.TRDSTATENM}
+    </div>
+  ))}
+  </div>
       </div>
+    </div>
     </div>
     </>
   )

@@ -1,8 +1,11 @@
-export default interface medicinepermissionList {
-    ATC_CODE: string;
-    ENTP_ENG_NAME: string;
-    EE_DOC_DATA: string;
-    BAR_CODE: string;
-    MAIN_ITEM_INGR: string;
-    MAIN_INGR_ENG: string;
+export default interface Medicinepermission {
+    atc_CODE: string;
+    entp_ENG_NAME: string;
+    bar_CODE: string;
+    main_ITEM_INGR: string;
+    main_INGR_ENG: string;
+    item_SEQ: string;
+    edi_CODE: string;
+    chart: string;
+    item_PERMIT_DATE: string;
 }

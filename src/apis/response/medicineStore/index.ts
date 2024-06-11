@@ -1,5 +1,5 @@
-import PostMedicineResponseDto from './post-medicineStore.response.dto';
+import PostMedicineStoreResponseDto from './post-medicineStore.response.dto';
 
 export type {
-    PostMedicineResponseDto
+    PostMedicineStoreResponseDto
 }

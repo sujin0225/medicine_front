@@ -35,6 +35,7 @@ const onSearchWordChangekHandler = (event: ChangeEvent<HTMLInputElement>) => {
 const postSearchResponse = (responseBody: PostSearchResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
     const { code } = responseBody;
+    console.log(code)
 
     if(code === 'DBE') alert('데이터베이스 오류입니다.');
     console.log(code);
