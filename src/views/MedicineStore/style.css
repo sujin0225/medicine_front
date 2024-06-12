@@ -92,12 +92,13 @@
 
 .map-content-gap {
     display: flex;
-  padding: 31px 0px 133px 0px;
-  width: 100%;
-  justify-content: space-between;
+    padding: 31px 0px 133px 0px;
+    width: 100%;
+    justify-content: space-between;
+    gap:40px;
 }
 
-#map {
+.map-container {
     width: 667px;
     height: 260px;
     border-radius: 16px;
@@ -213,4 +214,27 @@
     color: #9F9F9F;
     text-align: center;
     margin-top: 26px;
+}
+
+.store-content-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #4D4D4D;
+    padding-top: 44px;
+}
+
+.store-content-address-title {
+    padding: 20px 0px 10px 0px;
+    font-size: 18px;
+    color:#9F9F9F;
+}
+
+.store-content-address {
+    font-size: 18px;
+    color: #717171;
+    font-weight: 300;
+}
+
+.store-content-box {
+    padding: 38px 0px 38px 0px;
 }

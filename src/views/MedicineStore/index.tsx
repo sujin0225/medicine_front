@@ -19,7 +19,8 @@ export default function Store() {
   const [medicineStore, setMedicineStore] = useState<MedicineStore[]>([]);
   const [locations, setLocations] = useState<[string, string, string][]>([]);
   const [map, setMap] = useState(null);
-  //변환된 위도, 경도값 저장
+  const [marker, setMarker] = useState(null);
+  const [mapContainers, setMapContainers] = useState<string[]>([]);
   const [transformedCoord, setTransformedCoord] = useState<[number, number][] | null>(null);
   const [nametransformedCoord, setNameTransformedCoord] = useState<Location[] | null>(null);
   const wgs84 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs';
@@ -36,52 +37,6 @@ export default function Store() {
     AOS.init({duration: 2000});
   }, []);
 
-//   const fetchData = async (START_INDEX: string, END_INDEX: string) => {
-//     try {
-//         const data = await medicinestore(START_INDEX, END_INDEX); 
-//         // setMedicineStore(data.LOCALDATA_010105.row); 
-//         console.log("상비약 판매처 찾기:", data.LOCALDATA_010105.row); 
-//         const locations = data.LOCALDATA_010105.row.map((spot: MedicineStore) =>[
-//           spot.BPLCNM,
-//           spot.X,
-//           spot.Y
-//         ]);
-//         console.log(locations);
-//         setLocations(locations);
-//     } catch (error) {
-//         console.error('데이터 불러오기 에러:', error);
-//     }
-// };
-
-// const fetchData = async () => {
-//   try {
-//       const data = await medicinestore(); 
-//       // setMedicineStore(data.LOCALDATA_010105.row); 
-//       console.log("상비약 판매처 찾기:", data.LOCALDATA_010105_NW.row); 
-//       const locations = data.LOCALDATA_010105_NW.row.map((spot: MedicineStore) =>[
-//         spot.BPLCNM,
-//         spot.X,
-//         spot.Y
-//       ]);
-//       console.log(locations);
-//       setLocations(locations);
-//   } catch (error) {
-//       console.error('데이터 불러오기 에러:', error);
-//   }
-// };
-
-// const postMedicineStoreResponse = (responseBody: PostMedicineStoreResponseDto | ResponseDto | null) => {
-//   if (!responseBody) {
-//     console.log("responseBody가 null입니다.");
-//     return;
-//   }
-
-//     const { medicineStore } = responseBody as PostMedicineStoreResponseDto;
-//     setMedicineStore(medicineStore);
-//     console.log("콘솔에 찍기:", medicineStore);
-// }
-
-
 const postMedicineStoreResponse = (responseBody: any) => {
   if (!responseBody || !Array.isArray(responseBody)) {
     console.log("responseBody가 null이거나 배열이 아닙니다.");
@@ -91,11 +46,13 @@ const postMedicineStoreResponse = (responseBody: any) => {
   // responseBody 배열의 각 요소를 MedicineStore 객체로 변환
   const medicineStores: MedicineStore[] = responseBody.map((item: any) => ({
     MGTNO: item.MGTNO,
-    TRDSTATENM: item.TRDSTATENM,
-    DTLSTATENM: item.DTLSTATENM,
     BPLCNM: item.BPLCNM,
+    DTLSTATENM: item.DTLSTATENM,
+    TRDSTATENM: item.TRDSTATENM,
+    RDNWHLADDR: item.RDNWHLADDR,
+    SITEWHLADDR: item.SITEWHLADDR,
     X: item.X,
-    Y: item.Y,
+    Y: item.Y
   }));
 
   // 변환된 배열을 setMedicineStore 함수에 전달
@@ -104,14 +61,6 @@ const postMedicineStoreResponse = (responseBody: any) => {
   // 변환된 배열을 콘솔에 출력
   console.log("MedicineStore 배열:", medicineStores);
 }
-
-// useEffect(() => {
-//   fetchData(startIndex, endIndex);
-// }, [startIndex, endIndex])
-
-// useEffect(() => {
-//   fetchData();
-// }, [])
 
 useEffect(() => {
   handleConvert();
@@ -157,185 +106,32 @@ const handleConvert = () => {
       alert('유효한 좌표값을 입력하세요.');
     }
   });
-
-  // 변환된 좌표만 상태로 설정
-  // setTransformedCoord(tempTransformedCoords);
   setNameTransformedCoord(nameAndCoords);
   console.log("변환 후 좌표:", tempTransformedCoords);
   console.log("이름과 좌표:", nameAndCoords);
-  // 이름과 좌표를 함께 관리해야 하는 경우, nameAndCoords 배열을 사용
 };
 
-//지도+마커 표시하기
-// useEffect(() => {
-//   const container = document.getElementById('map');
-//   navigator.geolocation.getCurrentPosition(
-//     (position) => {
-//       const { latitude, longitude } = position.coords;
-//       const options = {
-//         center: new kakao.maps.LatLng(latitude, longitude),
-//         level: 3
-//       };
-//       console.log("사용자의 위치: ", latitude, longitude);
-//       const map = new kakao.maps.Map(container, options);
-
-//       const requestBody: PostMedicineRequestDto = { X: latitude , Y: longitude};
-//       console.log("사용자 위치 정보에 가까운 상비의약품 판매처: ", requestBody);
-//       postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
-
-//       // nameTransformedCoord가 null이 아니면 마커를 생성하는 로직을 실행
-//       if (nametransformedCoord) {
-//         nametransformedCoord.forEach(({name, coords}) => { // 구조 분해 할당을 사용하여 name과 coords에 접근
-//           const [x, y] = coords; // coords는 [number, number] 타입
-//           const marker = new kakao.maps.Marker({
-//             position: new kakao.maps.LatLng(y, x), // 위도(y), 경도(x) 순서로 설정
-//             image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
-//               offset: new kakao.maps.Point(25, 50),
-//             })   
-//           });
-//           marker.setMap(map);
-//           const infowindow = new kakao.maps.InfoWindow({
-//             content: name, // 각 마커별 이름 사용
-//           });
-
-//           // 마커에 클릭 이벤트 리스너 추가
-//           kakao.maps.event.addListener(marker, 'click', () => {
-//             infowindow.open(map, marker);
-//           });
-//         });
-//       }
-//     },
-//     (error) => {
-//       console.error("Geolocation error: ", error); 
-//     }
-//   );
-// }, [nametransformedCoord]); // 의존성 배열에 올바른 상태 변수명 사용
-
-// useEffect(() => {
-//   const initializeMap = () => {
-//     const container = document.getElementById('map'); // 지도를 표시할 div
-
-//     navigator.geolocation.getCurrentPosition(
-//       (position) => {
-//         const { latitude, longitude } = position.coords;
-
-//         const options = {
-//           center: new kakao.maps.LatLng(latitude, longitude),
-//           level: 3,
-//         };
-
-//         console.log('초기 위치:', latitude, longitude);
-//         const map = new kakao.maps.Map(container, options);
-
-//         // 초기 좌표 설정
-//         setCoordinates({ X: latitude, Y: longitude });
-
-//         console.log("지도 객체 생성:", map);
-//         setMap(map);
-
-//         // 지도 클릭, 드래그 엔드, 줌 레벨 변경 이벤트 등록
-//         // addMapEventListeners(map);
-//       },
-//       (error) => {
-//         console.error('Error getting location: ', error);
-//       },
-//       { enableHighAccuracy: true }
-//     );
-//   };
-
-//   if (!map) {
-//     initializeMap();
-//   }
-// }, [map]);
-
-const [marker, setMarker] = useState(null);
-
-// useEffect(() => {
-//   const container = document.getElementById('map');
-//   navigator.geolocation.getCurrentPosition(
-//     (position) => {
-//       const { latitude, longitude } = position.coords;
-//       const options = {
-//         center: new kakao.maps.LatLng(latitude, longitude),
-//         level: 3
-//       };
-//       const mapInstance = new kakao.maps.Map(container, options);
-//       setMap(mapInstance);
-
-//       console.log("초기 지도 중심 좌표: ", latitude, longitude);
-
-//       kakao.maps.event.addListener(mapInstance, 'dragend', function() {
-//         const center = mapInstance.getCenter();
-//         const lat = center.getLat();
-//         const lng = center.getLng();
-//         console.log("드래그 후 지도 중심 좌표: ", lat, lng);
-        
-//         const requestBody = { X: lat, Y: lng };
-//         console.log("API 요청 좌표: ", requestBody);
-        
-//         postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
-
-//         // 기존 마커 제거
-//         // if (marker) {
-//         //   marker.setMap(null);
-//         // }
-
-//         // 새로운 마커 추가
-//         const newMarker = new kakao.maps.Marker({
-//           position: new kakao.maps.LatLng(lat, lng),
-//           image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
-//             offset: new kakao.maps.Point(25, 50),
-//           })   
-//         });
-//         newMarker.setMap(mapInstance);
-//         setMarker(newMarker);
-
-//         // 필요하다면, 여기서 지도 마커와 정보를 업데이트하는 로직을 추가
-//         // const infowindow = new kakao.maps.InfoWindow({
-//         //   content: name, 
-//         // });
-//       });
-//     },
-//     (error) => {
-//       console.error("Geolocation error: ", error);
-//     },
-//     {
-//       enableHighAccuracy: true,
-//       timeout: 5000,
-//       maximumAge: 0
-//     }
-//   );
-// }, []);
-
 useEffect(() => {
-  const container = document.getElementById('map');
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const { latitude, longitude } = position.coords;
-      const options = {
-        center: new kakao.maps.LatLng(latitude, longitude),
-        level: 3
-      };
-      const mapInstance = new kakao.maps.Map(container, options);
-      setMap(mapInstance);
+      const requestBody = { X: latitude, Y: longitude };
 
-      console.log("초기 지도 중심 좌표: ", latitude, longitude);
-
-      // 초기 위치에서 API 요청
-      // const requestBody = { X: latitude, Y: longitude };
-      const requestBody: PostMedicineRequestDto = { X: latitude, Y: longitude };
       console.log("API 요청 좌표: ", requestBody);
-      postMedicineStoreRequest(requestBody).then(postMedicineStoreResponse);
 
-      // 초기 마커 설정
-      const marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(latitude, longitude),
-        image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
-          offset: new kakao.maps.Point(25, 50),
+      postMedicineStoreRequest(requestBody)
+        .then((response) => {
+          console.log("API 응답: ", response);
+          if (response && Array.isArray(response)) {
+            setMedicineStore(response);
+            console.log("약국 데이터 설정: ", response);
+          } else {
+            console.error("API 응답이 유효하지 않습니다: ", response);
+          }
         })
-      });
-      marker.setMap(mapInstance);
-      setMarker(marker);
+        .catch((error) => {
+          console.error("API 호출 오류: ", error);
+        });
     },
     (error) => {
       console.error("Geolocation error: ", error);
@@ -343,10 +139,45 @@ useEffect(() => {
     {
       enableHighAccuracy: true,
       timeout: 5000,
-      maximumAge: 0
+      maximumAge: 0,
     }
   );
 }, []);
+
+useEffect(() => {
+  if (medicineStore.length > 0) {
+    const newMapContainers: string[] = medicineStore.map((_, index) => `map-container-${index}`);
+    setMapContainers(newMapContainers);
+  }
+}, [medicineStore]);
+
+useEffect(() => {
+  if (mapContainers.length > 0) {
+    mapContainers.forEach((containerId, index) => {
+      const container = document.getElementById(containerId);
+      const store = medicineStore[index];
+
+      if (container && store) {
+        const options = {
+          center: new kakao.maps.LatLng(store.Y, store.X),
+          level: 3
+        };
+
+        const mapInstance = new kakao.maps.Map(container, options);
+        const storeMarker = new kakao.maps.Marker({
+          position: new kakao.maps.LatLng(store.Y, store.X),
+          image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
+            offset: new kakao.maps.Point(25, 50),
+          }),
+        });
+        storeMarker.setMap(mapInstance);
+        console.log("마커 설정 완료: ", store);
+      } else {
+        console.error("컨테이너 또는 약국 데이터가 유효하지 않습니다:", containerId, store);
+      }
+    });
+  }
+}, [mapContainers, medicineStore]);
 
   return (
     <>
@@ -397,12 +228,21 @@ useEffect(() => {
     <div id='store'>
       <div className='store-map-container'>
         <div className='map-content-gap'>
-      <div id="map"></div>
+      <div id="map">
+      {mapContainers.map((containerId, index) => (
+        <div key={containerId} id={containerId} className="map-container"></div>
+      ))}
+      </div>
       <div className="store-content">
       {medicineStore.map((store, index) => (
     <div key={index}>
-      {store.BPLCNM}
-      {store.TRDSTATENM}
+      <div className='store-content-box'>
+      <div className='store-content-title'>{store.BPLCNM}</div>
+      <div className='store-content-address-title'>도로명주소</div>
+      <div className='store-content-address'>{store.RDNWHLADDR}</div>
+      <div className='store-content-address-title'>지번주소</div>
+      <div className='store-content-address'>{store.SITEWHLADDR ? store.SITEWHLADDR : '지번주소가 없습니다'}</div>
+    </div>
     </div>
   ))}
   </div>
