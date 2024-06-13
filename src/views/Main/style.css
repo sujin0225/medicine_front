@@ -26,7 +26,7 @@
 
 .main-background-image {
     margin-top: 90px;
-    height: 450px;
+    height: 370px;
     background-position: center;
     background-size: cover;
     background-attachment: fixed;
@@ -47,21 +47,21 @@
 }
 
 .main-image-text-content {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 400;
     color: #E2E2E2;
     z-index: 2;
 }
 
 .main-image-text-title-bold {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 700;
     color: #E2E2E2;
     z-index: 2;
 }
 
 .main-image-text-title {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 300;
     color: #E2E2E2;
     z-index: 2;
@@ -69,7 +69,7 @@
 
 .main-text-box {
     display: flex;
-    padding-top: 200px;
+    padding-top: 150px;
     gap: 10px;
 }
 

@@ -1,7 +1,7 @@
 .store-background-image {
     margin-top: 90px;
-    height: 450px;
-    background-position: center 132%;
+    height: 370px;
+    background-position: center 167%;
     background-size: cover;
     background-attachment: fixed;
     background-image: url(image/store_image.jpg);
@@ -92,7 +92,7 @@
 
 .map-content-gap {
     display: flex;
-    padding: 31px 0px 133px 0px;
+    /* padding: 31px 0px 133px 0px; */
     width: 100%;
     justify-content: space-between;
     gap:40px;
@@ -116,12 +116,12 @@
     width: 1320px;
     display: flex; 
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     justify-content: center;
 }
 
 .store-image-text-content {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 400;
     color: #E2E2E2;
     z-index: 2;
@@ -129,14 +129,14 @@
 }
 
 .store-image-text-title-bold {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 700;
     color: #E2E2E2;
     z-index: 2;
 }
 
 .store-image-text-title {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 400;
     color: #E2E2E2;
     z-index: 2;
@@ -144,7 +144,7 @@
 
 .store-text-box {
     display: flex;
-    padding-top: 200px;
+    padding-top: 150px;
     gap: 10px;
 }
 
@@ -156,7 +156,7 @@
 .store-text-box-title {
     display: flex;
     gap: 5px;
-    padding-bottom: 20px;
+    padding-bottom: 15px;
 }
 
 .store-box-content {
@@ -172,8 +172,8 @@
 }
 
 .store-text-title-gold {
-    font-size: 24px;
-    font-weight: 800;
+    font-size: 22px;
+    font-weight: 700;
     color: #C7BA9A;
     z-index: 2;
 }
@@ -218,15 +218,15 @@
 
 .store-content-title {
     font-size: 20px;
-    font-weight: 600;
-    color: #4D4D4D;
-    padding-top: 44px;
+    font-weight: 700;
+    color: #585858;
+    /* padding-top: 44px; */
 }
 
 .store-content-address-title {
     padding: 20px 0px 10px 0px;
-    font-size: 18px;
-    color:#9F9F9F;
+    font-size: 16px;
+    color:#c9c9c9;
 }
 
 .store-content-address {
@@ -236,5 +236,6 @@
 }
 
 .store-content-box {
-    padding: 38px 0px 38px 0px;
+    padding: 43px 0px 43px 0px;
+    margin-top: 38px;
 }
