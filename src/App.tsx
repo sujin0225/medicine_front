@@ -10,9 +10,10 @@ import Store from 'views/MedicineStore';
 import Mypage from 'views/Mypage/FavoriteMedicine';
 import MyReview from 'views/Mypage/MyReview';
 import UserUpdate from 'views/Mypage/UserUpdate';
+import StoreSearch from 'views/MedicineStoreSearch'
 import MypageNavigate from 'components/MyPage_navigate';
 import { SIGN_IN_PATH, SIGN_UP_PATH, MEDICINE_SEARCH_PATH, MEDICINE_DETAIL_PATH, SEARCH_PATH, MAIN_PATH, 
-  MEDICINE_STORE_PATH, USER_PATH, MY_REVIEW, USER_UPDATE } from 'constant';
+  MEDICINE_STORE_PATH, USER_PATH, MY_REVIEW, USER_UPDATE, MEDICINE_LOCATIONS_STORE_PATH } from 'constant';
 import { useLoginUserStore } from 'stores';
 import { useEffect } from 'react';
 import MedicineSearch from 'views/MedicineSearch/Main';
@@ -64,6 +65,7 @@ function App() {
         <Route path={MEDICINE_SEARCH_PATH()} element={<MedicineSearch /> } />
         <Route path={MEDICINE_DETAIL_PATH(':ITEM_SEQ')} element={<MedicineDetail />} />
         <Route path={SEARCH_PATH(':searchWord')} element={<Search />} />
+        <Route path={MEDICINE_LOCATIONS_STORE_PATH(':searchWord')} element={<StoreSearch/>} />
         <Route path={SIGN_IN_PATH()} element={<SignIn />} />
         <Route path={SIGN_UP_PATH()} element={<SignUp />} />
         <Route path={MEDICINE_STORE_PATH()} element={<Store />} />

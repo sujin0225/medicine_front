@@ -8,7 +8,7 @@ import { GetMedicineResponeDto, GetMedicinePermissionResponseDto, GetMedicineInf
 import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto, UpdateEmailCertificationResponseDto, UpdateEmailResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto, PutFavoriteMedicineRequestDto } from "./request/review";
 import { PatchPasswordRequestDto, UpdateEmailCertificationRequestDto, UpdateEmailRequestDto } from "./request/user";
-import { PostMedicineStoreResponseDto } from "./response/medicineStore";
+import { PostMedicineStoreResponseDto, GetMedicineStoreSearchResponseDto } from "./response/medicineStore";
 import { PostMedicineRequestDto } from "./request/medicineStore";
 import { PostSearchRequestDto } from "./request/search";
 import { ResponseDto } from "./response";
@@ -52,6 +52,7 @@ const GET_HELPFUL_LIST_URL = (reviewNumber: number | string) => `${API_DOMAIN}/r
 const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
 const POST_SEARCH_URL = (searchWord: string) => `${API_DOMAIN}/search/${searchWord}`;
 const POST_MEDICINE_STORE_URL = () => `${API_DOMAIN}/medicine-stores/locations`;
+const GET_MEDICINE_STORE_SEARCH_URL = (searchWord: string) => `${API_DOMAIN}/medicine-stores/areaSearch?address=${searchWord}`
 const GET_MEDICINE_DETAIL_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicine/${ITEM_SEQ}`;
 const GET_FAVORITE_MEDICINE_URL = () => `${API_DOMAIN}/review/favorite`;
 const PUT_FAVORITE_MEDICINE_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/review/favorite/${ITEM_SEQ}`;
@@ -313,6 +314,21 @@ export const postMedicineStoreRequest = async (requestBody: PostMedicineRequestD
             return responseBody;
         });
     return result;    
+}
+
+//상비 의약품 판매처 지역으로 검색
+export const getMedicineStoreSearchRequest = async (searchWord: string) => {
+    const result = await axios.get(GET_MEDICINE_STORE_SEARCH_URL(searchWord))
+    .then(response => {
+        const responseBody: GetMedicineStoreSearchResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
 }
 
 //의약품 상세 기본정보 불러오기

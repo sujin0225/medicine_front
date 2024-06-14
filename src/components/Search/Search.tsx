@@ -22,7 +22,7 @@ const searchButtonRef = useRef<HTMLDivElement | null>(null);
 const { searchWord } = useParams();
 
 //state: 검색어 상태
-const [searchType, setSearchType] = useState<'medicine' | 'convenienceStore'>('medicine');
+const [searchType, setSearchType] = useState<'medicine' | 'MedicineStore'>('medicine');
 
 
 //event handler: 검색어 버튼 클릭 이벤트 처리 함수
@@ -60,7 +60,7 @@ const onSearchButtonClickHandler = () => {
         requestBody = { searchWord: word };
         navigate(path);
         postSearchRequest(word, requestBody).then(postSearchResponse);
-    } else if (searchType === 'convenienceStore') {
+    } else if (searchType === 'MedicineStore') {
         // path = SEARCH_CONVENIENCE_STORE_PATH(word);
         requestBody = { searchWord: word };
     }
@@ -83,7 +83,7 @@ useEffect(() => {
     <div id='search'>
     <div className='search-input-box'>
         {/* <input className='search-input' type='text' placeholder='의약품명을 입력해주세요.' value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler}/> */}
-        <input className='search-input' type='text' placeholder={searchType === 'medicine' ? '의약품명을 입력해주세요.' : '편의점명을 입력해주세요.'} value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler} />
+        <input className='search-input' type='text' placeholder={searchType === 'medicine' ? '의약품명을 입력해주세요.' : '지역을 입력해주세요.'} value={word} onChange={onSearchWordChangekHandler} onKeyDown={onSearchWordKeyDownHandler} />
             <div className='search-icon' ref={searchButtonRef} onClick={onSearchButtonClickHandler}></div>
         </div>
     </div>

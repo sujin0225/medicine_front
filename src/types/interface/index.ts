@@ -10,6 +10,7 @@ import Medicine from "./medicine.interface";
 import FavoriteMedicine from "./favorite-medicine.interface";
 import MyReview from "./myreview.interface"
 import Medicinepermission from "./medicine-permission.interface";
+import MedicineStoreSearch from "./medicine-store-search.interface";
 
 export type {
     User,
@@ -23,5 +24,6 @@ export type {
     Medicine,
     FavoriteMedicine,
     MyReview,
-    Medicinepermission
+    Medicinepermission,
+    MedicineStoreSearch
 }

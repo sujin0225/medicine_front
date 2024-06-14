@@ -1,54 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import './style.css'
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import MedicineStoreSearch from 'components/MedicineStoreSearch'
+import { MedicineStoreSearch } from 'types/interface';
+import StoreSearch from 'components/MedicineStoreSearch'
+import { getMedicineStoreSearchRequest } from 'apis'
 import markerImage from './image/marker.png';
-import { MedicineStore } from 'types/interface';
-import { postMedicineStoreRequest } from 'apis';
+import { useParams } from 'react-router-dom';
+import { GetMedicineStoreSearchResponseDto } from 'apis/response/medicineStore';
+import { ResponseDto } from 'apis/response';
 declare const kakao: any;
 
-export default function Store() {
-  const [medicineStore, setMedicineStore] = useState<MedicineStore[]>([]);
-  const [mapContainers, setMapContainers] = useState<string[]>([]);
-
-  //슬라이드 효과
-  useEffect(() => {
-    AOS.init({duration: 2000});
-  }, []);
+export default function StoreSearchView() {
+const [mapContainers, setMapContainers] = useState<string[]>([]);
+const [medicineStore, setMedicineStore] = useState<MedicineStoreSearch[]>([]);
+//state: 검색어 path variable 상태
+const { searchWord } = useParams();
 
 useEffect(() => {
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const { latitude, longitude } = position.coords;
-      const requestBody = { X: latitude, Y: longitude };
+  getMedicineStoreSearchRequest(searchWord ?? '').then(getMedicineStoreSearchResponse);
+}, [searchWord]);
 
-      console.log("API 요청 좌표: ", requestBody);
-
-      postMedicineStoreRequest(requestBody)
-        .then((response) => {
-          console.log("API 응답: ", response);
-          if (response && Array.isArray(response)) {
-            setMedicineStore(response);
-            console.log("약국 데이터 설정: ", response);
-          } else {
-            console.error("API 응답이 유효하지 않습니다: ", response);
-          }
-        })
-        .catch((error) => {
-          console.error("API 호출 오류: ", error);
-        });
-    },
-    (error) => {
-      console.error("Geolocation error: ", error);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0,
+//상비의약품 판매처 지역으로 검색
+const getMedicineStoreSearchResponse = (responseBody: GetMedicineStoreSearchResponseDto | ResponseDto | null) => {
+  console.log("API Response:", responseBody);
+  
+  if (responseBody && 'medicineStoreListItems' in responseBody) {
+    const { medicineStoreListItems } = responseBody as GetMedicineStoreSearchResponseDto;
+    if (medicineStoreListItems.length > 0) {
+      setMedicineStore(medicineStoreListItems);
+    } else {
+      setMedicineStore([]);
     }
-  );
-}, []);
+    console.log(medicineStoreListItems);
+  } else {
+    setMedicineStore([]);
+    console.error("Unexpected response format:", responseBody);
+  }
+}
 
 useEffect(() => {
   if (medicineStore.length > 0) {
@@ -65,13 +51,13 @@ useEffect(() => {
 
       if (container && store) {
         const options = {
-          center: new kakao.maps.LatLng(store.Y, store.X),
+          center: new kakao.maps.LatLng(store.y, store.x),
           level: 3
         };
 
         const mapInstance = new kakao.maps.Map(container, options);
         const storeMarker = new kakao.maps.Marker({
-          position: new kakao.maps.LatLng(store.Y, store.X),
+          position: new kakao.maps.LatLng(store.y, store.x),
           image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(50, 50), {
             offset: new kakao.maps.Point(25, 50),
           }),
@@ -133,7 +119,7 @@ useEffect(() => {
     </div>
     <div id='store'>
       <div className='store-map-container'>
-      <MedicineStoreSearch />
+      <StoreSearch />
         <div className='map-content-gap'>
       <div id="map">
       {mapContainers.map((containerId, index) => (
@@ -144,11 +130,11 @@ useEffect(() => {
       {medicineStore.map((store, index) => (
     <div key={index}>
       <div className='store-content-box'>
-      <div className='store-content-title'>{store.BPLCNM}</div>
+      <div className='store-content-title'>{store.bplcnm}</div>
       <div className='store-content-address-title'>도로명주소</div>
-      <div className='store-content-address'>{store.RDNWHLADDR}</div>
+      <div className='store-content-address'>{store.rdnwhladdr}</div>
       <div className='store-content-address-title'>지번주소</div>
-      <div className='store-content-address'>{store.SITEWHLADDR ? store.SITEWHLADDR : '지번주소가 없습니다'}</div>
+      <div className='store-content-address'>{store.sitewhladdr ? store.sitewhladdr : '지번주소가 없습니다'}</div>
     </div>
     </div>
   ))}

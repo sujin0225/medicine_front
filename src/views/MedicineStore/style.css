@@ -94,7 +94,7 @@
     display: flex;
     /* padding: 31px 0px 133px 0px; */
     width: 100%;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     gap:40px;
 }
 
