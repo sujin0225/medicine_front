@@ -11,35 +11,40 @@ import { medicineSearch } from 'publicapi';
 export default function SearchView() {
 
   //state: searchWord path variable
-  const { searchWord } = useParams();
+  // const { searchWord } = useParams();
   //state: 의약품 리스트 상태
   const [medicineList, setMedicineList] = useState<MedicineListItem[]>([]);
   //state: 페이지 변경 상태
   const [currentPage, setCurrentPage] = useState(1);
   //state: 전체 페이지 상태
   const [totalCount, setTotalCount] = useState(0);
+  const [currentSearchWord, setCurrentSearchWord] = useState<string>('');
   
-  useEffect(() => {
-    fetchData(searchWord ?? ''); // searchWord가 undefined일 경우 ''으로 대체
-}, [searchWord]);
+  const { searchWord } = useParams<{ searchWord: string }>();
 
-  const fetchData = async (searchWord: string) => {
+  // 페이지나 검색어가 변경될 때마다 데이터를 가져오는 useEffect
+  useEffect(() => {
+    if (searchWord) {
+      fetchData(searchWord, currentPage);
+    }
+  }, [searchWord, currentPage]);
+
+  const fetchData = async (searchWord: string, pageNo: number) => {
     try {
-      const data = await medicineSearch(searchWord); 
-      setMedicineList(data.body.items); 
-      setTotalCount(data.body.totalCount); 
-      console.log("검색 리스트 불러오기:", data.body.items); 
+      const data = await medicineSearch(searchWord, pageNo);
+      setMedicineList(data.body.items);
+      setTotalCount(data.body.totalCount);
+      console.log("검색 리스트 불러오기:", data.body.items);
     } catch (error) {
       console.error('데이터 불러오기 에러:', error);
     }
   };
-  
+
   const handlePageChange = (newPageNo: number) => {
-    setCurrentPage(newPageNo); // 페이지 번호 변경
+    setCurrentPage(newPageNo);
   };
 
-
-
+  
   if(!searchWord) return(<></>);
   return (
     <>

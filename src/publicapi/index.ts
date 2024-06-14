@@ -7,7 +7,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 const STORE_API_KEY = process.env.REACT_APP_STORE_KEY;
 
 const MEDICINE_URL = (pageNo: number) => `http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?serviceKey=${API_KEY}&type=json&item_name=&entp_name=&item_seq=&img_regist_ts=&pageNo=${pageNo}&numOfRows=16&edi_code=`;
-const MEDICINE_SEARCH_URL = (searchWord: string) => `http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?serviceKey=${API_KEY}&type=json&item_name=${searchWord}&entp_name=&item_seq=&img_regist_ts=&pageNo=1&numOfRows=16&edi_code=`;
+const MEDICINE_SEARCH_URL = (searchWord: string, pageNo: number) => `http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?serviceKey=${API_KEY}&type=json&item_name=${searchWord}&entp_name=&item_seq=&img_regist_ts=&pageNo=${pageNo}&numOfRows=16&edi_code=`;
 // const MEDICINE_DETAIL_URL = (ITEM_SEQ: string) => `http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?serviceKey=${API_KEY}&type=json&item_name=&entp_name=&item_seq=${ITEM_SEQ}&img_regist_ts=&pageNo=1&numOfRows=16&edi_code=`;
 const MEDICINE_PERMISSION_URL = (ITEM_SEQ: string) => `https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService05/getDrugPrdtPrmsnDtlInq03?serviceKey=${API_KEY}&type=json&item_seq=${ITEM_SEQ}`;
 const MEDICINE_INFO_URL = (ITEM_SEQ: string) => `http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=${API_KEY}&type=json&itemSeq=${ITEM_SEQ}`;
@@ -28,9 +28,9 @@ export const medicine = async (pageNo: number) => {
 };
 
 //의약품 낱알 식별 검색 리스트
-export const medicineSearch = async (searchWord: string) => {
+export const medicineSearch = async (searchWord: string, pageNo: number) => {
     try {
-        const response = await axios.get(MEDICINE_SEARCH_URL(searchWord));
+        const response = await axios.get(MEDICINE_SEARCH_URL(searchWord, pageNo));
         const data = response.data;
         console.log("Medicine_search_data:", data); // 데이터 확인용 로그
         return data;
