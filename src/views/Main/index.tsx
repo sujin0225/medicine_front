@@ -8,6 +8,7 @@ import { ResponseDto } from 'apis/response';
 import { getPopularListRequest } from 'apis';
 import { SEARCH_PATH, USER_PATH } from 'constant';
 import { useLoginUserStore } from 'stores'
+import { Myalert } from 'components/alert';
 
 //메인 화면 컴포넌트
 export default function Main() {
@@ -32,7 +33,10 @@ const onMedicineStoreClickHandler = () => {
 
 //event handler: 마이페이지 버튼 클릭 이벤트 처리 함수
 const onMyPageButtonClickHandler = () => {
-  if(!loginUser) return;
+  if(!loginUser) {
+    Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")
+    return
+  }
   const { userId } = loginUser;
   navigate(USER_PATH(userId));
 };

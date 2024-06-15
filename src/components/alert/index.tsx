@@ -1,5 +1,6 @@
 import React from 'react';
 import Swal from "sweetalert2";
+import './style.css'
 
 export const Myalert = async(icon: 'success' | 'error' | 'warning' | 'info' | 'question', title: string, text: string, confirmButtonText: string) => {
     return await Swal.fire({

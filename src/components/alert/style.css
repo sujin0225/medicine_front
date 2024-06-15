@@ -1,0 +1,26 @@
+/* 아이콘 폰트도 변경됨 */
+.swal2-popup {
+    font-family: 'GmarketSansBold';
+}
+
+/* 제목 */
+.swal2-title {
+    font-family: 'GmarketSansBold';
+    color: #C7BA9A;
+  }
+  
+  /* 내용(text) */
+  .swal2-html-container {
+    font-family: 'GmarketSansMedium';
+    color: #4D4D4D;
+  }
+
+/* 확인 버튼 */
+.swal2-confirm {
+  font-family: 'GmarketSansBold'; 
+}
+
+/* 삭제 버튼 */
+.swal2-cancel {
+  font-family: 'GmarketSansBold'; 
+}

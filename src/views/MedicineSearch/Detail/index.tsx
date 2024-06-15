@@ -14,6 +14,7 @@ import { PostReviewResponseDto } from 'apis/response/review';
 import { PostReviewRequestDto } from 'apis/request/review';
 import { GetMedicineInfoResponseDto, GetMedicinePermissionResponseDto, GetMedicineResponeDto } from "apis/response/medicine";
 import Rating from "components/Rating/Rating";
+import { Myalert } from 'components/alert';
 
 export default function MedicineDetail() {
   const [toggleState, setToggleState] = useState(1);
@@ -25,7 +26,7 @@ export default function MedicineDetail() {
   const [totalCount, setTotalCount] = useState(0);
   const [favorite, setFavorite] = useState<boolean>(false);
   const [favoriteListItems, setFavoriteListItems] = useState<FavoriteMedicine[]>([]);
-const { loginUser } = useLoginUserStore();
+  const { loginUser } = useLoginUserStore();
 
   //state: 전체 댓글 개수 상태
   const [totalReviewCount, setTotalReviewCount] = useState<number>(0);
@@ -49,7 +50,6 @@ const { loginUser } = useLoginUserStore();
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   //게시물 이미지 리스트
   const { reviewImageFileList, setReviewImageFileList } = useReviewStore();
-
 
   const toggleTab = (index: number) => {
       setToggleState(index);
@@ -157,10 +157,16 @@ const putFavoriteMedicineResponse = (responseBody: PutFavoriteMedicineResponseDt
     const { code } = responseBody;
 
     if (code === 'DBE') alert('데이터베이스 오류입니다.');
-    if (code === 'NU') alert('존재하지 않는 유저입니다.');
+    if (code === 'NU') 
+        Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")
     if (code !== 'SU') return;
 
     if (!ITEM_SEQ) return;
+
+    if (!loginUser || !cookies.accessToken) {
+        alert('토큰이 없습니다. 로그인 해주세요.');
+        return; 
+    }
     getFavoriteMedicineRequest(cookies.accessToken).then(getFavoriteMedicineResponse);
     getMedicineRequest(ITEM_SEQ).then(getMedicineResponse);
 };
@@ -234,6 +240,7 @@ useEffect(() => {
         putFavoriteMedicineRequest(ITEM_SEQ, requestBody, accessToken).then(putFavoriteMedicineResponse);
     } else {
         console.error("ITEM_SEQ가 유효하지 않습니다.");
+        Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")
     }
 };
 
