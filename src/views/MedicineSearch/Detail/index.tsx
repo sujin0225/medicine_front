@@ -164,7 +164,7 @@ const putFavoriteMedicineResponse = (responseBody: PutFavoriteMedicineResponseDt
     if (!ITEM_SEQ) return;
 
     if (!loginUser || !cookies.accessToken) {
-        alert('토큰이 없습니다. 로그인 해주세요.');
+        Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")
         return; 
     }
     getFavoriteMedicineRequest(cookies.accessToken).then(getFavoriteMedicineResponse);
@@ -196,9 +196,9 @@ useEffect(() => {
       return; 
     }
     if(!ITEM_SEQ) return;
-    if(!accessToken) {
-      alert('로그인 해주세요!');
-      return;
+    if (!loginUser || !cookies.accessToken) {
+        Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")
+        return; 
     }
   
     const reviewImageList: string[] = [];

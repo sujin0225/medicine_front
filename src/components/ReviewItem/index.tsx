@@ -10,6 +10,7 @@ import { convertUrlsToFile } from 'utils';
 import Rating from "components/Rating/Rating";
 import { GetReviewListRequest, patchReviewRequest, fileuploadRequest, getReviewRequest, putHelpfulRequest, getHelpfulListRequest } from 'apis';
 import { PatchReviewRequestDto } from 'apis/request/review';
+import { Myalert } from 'components/alert';
 
 interface Props {
     reviewListItem: ReviewListItem;
@@ -192,7 +193,10 @@ const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
 
   //도움돼요 버튼 클릭 이벤트 처리
   const onHelpfulClickHandler = () => {
-    if(!reviewNumber || !loginUser || !cookies.accessToken) return;
+    if(!reviewNumber || !loginUser || !cookies.accessToken) {
+      Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")
+      return;
+    }
     putHelpfulRequest(reviewNumber, cookies.accessToken).then(putHelpfulResponse);
   }
 
