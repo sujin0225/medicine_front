@@ -25,6 +25,7 @@ import { ResponseDto } from 'apis/response';
 import { User } from 'types/interface';
 import { getSignInUserRequest } from 'apis';
 import { useParams } from 'react-router-dom';
+import ProtectedRoute from 'components/PrivateRoute';
 
 function App() {
 
@@ -69,11 +70,17 @@ function App() {
         <Route path={SIGN_IN_PATH()} element={<SignIn />} />
         <Route path={SIGN_UP_PATH()} element={<SignUp />} />
         <Route path={MEDICINE_STORE_PATH()} element={<Store />} />
-        <Route path={USER_PATH(':userId')} element={<Mypage />} /> 
-        <Route path={MY_REVIEW(':userId')} element={<MyReview />} />
+        {/* <Route path={USER_PATH(':userId')} element={<Mypage />} /> 
+        <Route path={MY_REVIEW(':userId')} element={<MyReview />} /> */}
+        {/* <Route path={USER_UPDATE(':userId')} element={<UserUpdate/>}/> */}
+        <Route path={USER_PATH(':userId')} element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
+        <Route path={MY_REVIEW(':userId')} element={<ProtectedRoute><MyReview /></ProtectedRoute>} />
+        <Route path={USER_UPDATE(':userId')} element={
+          <ProtectedRoute>
+            <UserUpdate />
+          </ProtectedRoute>
+        } />
         <Route path='oauth-response/:token/:expirationTime' element={<OAuth/>} />
-        <Route path={USER_UPDATE(':userId')} element={<UserUpdate/>}/>
-        {/* <Route path="/user/:username" component={MypageNavigate} /> */}
       </Route>
     </Routes>
   );
