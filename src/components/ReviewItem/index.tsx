@@ -85,7 +85,7 @@ const getReviewResponse = (reviewNumber:number,  responseBody: GetReviewResponse
     if(code === 'VF') alert('잘못된 접근입니다.');
     if(code === 'DBE') alert('데이터베이스 오류입니다.');
     if(code !== 'SU') alert('댓글 삭제에 실패했습니다.'); 
-    if(code === 'SU') alert('댓글이 삭제되었습니다.'); 
+    if(code === 'SU') Myalert("success", "리뷰 삭제 완료", "리뷰 삭제에 성공했습니다!", "확인")
     onSuccessUpdate()
     setShowMore(false);
     return;
@@ -228,7 +228,6 @@ const onDeleteButtonClickHandler = () => {
   console.log("onDeleteButtonClickHandler 호출됨");
   if(!reviewNumber || !loginUser || !cookies.accessToken) {
     console.log({ reviewNumber, loginUserUserId: loginUser?.userId, accessToken: cookies.accessToken });
-
     console.log("필수 값 누락");
     return;
   }
@@ -236,9 +235,7 @@ const onDeleteButtonClickHandler = () => {
     console.log("사용자 ID 불일치");
     return;
   }
-  deleteReviewRequest(reviewNumber, cookies.accessToken)
-    .then(deleteReviewResponse)
-    .catch(error => console.error(error)); 
+  deleteReviewRequest(reviewNumber, cookies.accessToken).then(deleteReviewResponse).catch(error => console.error(error)); 
 }
 
   //리뷰 작성 버튼 클릭 이벤트 처리
@@ -263,7 +260,7 @@ const onDeleteButtonClickHandler = () => {
     console.log("리뷰:", requestBody);
   
     if(accessToken) {
-      alert('리뷰 수정이 완료되었습니다!')
+      Myalert("success", "리뷰 수정 완료", "리뷰 수정에 성공했습니다!", "확인")
       patchReviewRequest(reviewNumber, requestBody, accessToken).then(patchReviewResponse);
     }
   }

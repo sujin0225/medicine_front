@@ -8,6 +8,7 @@ enum ResponseCode {
     DATABASE_ERROR = "DBE", //데이터베이스 에러
     AUTHORIZATION_FAIL = "AF", //인증 실패
     NOT_EXISTED_USER = "NU", //존재하지 않는 유저
+    NOT_EXISTED_REVIEW = 'NR' //존재하지 않는 리뷰
 };
 
 export default ResponseCode;

@@ -94,14 +94,23 @@ const getMedicineInfoResponse = (responseBody: GetMedicineInfoResponseDto | Resp
 
 //리뷰 글 불러오기(Get)
 const getReviewListResponse = (responseBody: GetReviewListResponseDto | ResponseDto | null) => {
-    if(!responseBody) return;
+    if (!responseBody) {
+        setReviewList([]);
+        setTotalReviewCount(0);
+        return;
+    }
     const { code } = responseBody;
+    if(code === 'NR') {
+        setReviewList([]);
+        setTotalReviewCount(0);
+    }
     if(code === 'DBE') alert('데이터베이스 오류입니다.');
     if(code !== 'SU') return;
     
     const { reviewListItems } = responseBody as GetReviewListResponseDto;
     setReviewList(reviewListItems);
     setTotalReviewCount(reviewListItems.length);
+    console.log(reviewListItems.length);
 }
 
 //리뷰 글 작성(Post)
@@ -215,7 +224,7 @@ useEffect(() => {
     console.log("리뷰:", requestBody);
   
     if(accessToken) {
-      alert('리뷰 작성이 완료되었습니다!')
+        Myalert("success", "리뷰 작성 완료", "리뷰 작성에 성공했습니다!", "확인")
       postReviewRequest(ITEM_SEQ, requestBody, accessToken).then(postReviewResponse);
     }
   }
@@ -238,6 +247,7 @@ useEffect(() => {
 
     if (accessToken && ITEM_SEQ) {
         putFavoriteMedicineRequest(ITEM_SEQ, requestBody, accessToken).then(putFavoriteMedicineResponse);
+        
     } else {
         console.error("ITEM_SEQ가 유효하지 않습니다.");
         Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")
@@ -294,9 +304,9 @@ const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
   }
 
   const refreshReviews = () => {
-    if(!ITEM_SEQ) return;
+    if (!ITEM_SEQ) return;
     GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
-  };
+};
 
 const accordion = [
     {
