@@ -182,8 +182,7 @@ button {
 }
 
 .accordion {
-    height: 1000px;
-    padding-top: 17px;
+    padding: 17px 0px 133px 0px;
 }
 
 .accordion-item {

@@ -80,6 +80,9 @@ const getMedicineResponse = (responseBody: GetMedicineResponeDto | ResponseDto |
 
 //의약품 제품 허가 정보
 const getMedicinePermissionResponse = (responseBody: GetMedicinePermissionResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'NP') return
     const medicinepermission: Medicinepermission = {...responseBody as GetMedicinePermissionResponseDto};
     setMedicinepermission(medicinepermission);
     console.log(medicinepermission);
@@ -87,6 +90,9 @@ const getMedicinePermissionResponse = (responseBody: GetMedicinePermissionRespon
 
 //의약품 복약 정보
 const getMedicineInfoResponse = (responseBody: GetMedicineInfoResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'NP') return
     const medicineinfo: MedicineInfo = {...responseBody as GetMedicineInfoResponseDto};
     setMedicineinfo(medicineinfo);
     console.log(medicineinfo);
@@ -110,7 +116,6 @@ const getReviewListResponse = (responseBody: GetReviewListResponseDto | Response
     const { reviewListItems } = responseBody as GetReviewListResponseDto;
     setReviewList(reviewListItems);
     setTotalReviewCount(reviewListItems.length);
-    console.log(reviewListItems.length);
 }
 
 //리뷰 글 작성(Post)
@@ -135,6 +140,7 @@ const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | 
     GetReviewListRequest(ITEM_SEQ).then(getReviewListResponse);
   }
 
+  //관심 의약품(GET)
   const getFavoriteMedicineResponse = (responseBody: GetFavoriteMedicineResponseDto | ResponseDto | null) => {
     if (!responseBody) return;
     const { code } = responseBody;
@@ -161,6 +167,7 @@ const postReviewResponse = (responseBody: PostReviewResponseDto | ResponseDto | 
   };
   
 
+//관심 의약품 저장
 const putFavoriteMedicineResponse = (responseBody: PutFavoriteMedicineResponseDto | ResponseDto | null) => {
     if (!responseBody) return;
     const { code } = responseBody;
@@ -247,7 +254,6 @@ useEffect(() => {
 
     if (accessToken && ITEM_SEQ) {
         putFavoriteMedicineRequest(ITEM_SEQ, requestBody, accessToken).then(putFavoriteMedicineResponse);
-        
     } else {
         console.error("ITEM_SEQ가 유효하지 않습니다.");
         Myalert("warning", "로그인 안내", "로그인이 필요한 서비스입니다.", "확인")

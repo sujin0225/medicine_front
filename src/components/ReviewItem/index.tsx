@@ -317,16 +317,16 @@ return (
                     <div className='review-input-container'>
                         <div className='board-write-content-box'>
                             <textarea className='review-textarea' placeholder='리뷰를 작성해보세요.' onChange={onContentChangeHandler} value={reviewcontent} ref={contentRef}/>
-                            <div className='camera-icon' onClick={onImageUploadButtonClickHandler}></div>
+                            <div className='icon camera-icon' onClick={onImageUploadButtonClickHandler}></div>
                             <input type='file' accept='image/*' style={{ display: 'none' }} onChange={onImageChangeHandler} ref={imageInputRef}/>
                         </div>
                     </div>
                     <div className='board-write-images-box'>
                         {imageUrls.map((imageUrl, index) => (
-                            <div className='review-write-image-box' key={index}>
-                                <img className='write-image' src={imageUrl} alt="Review"/>
+                            <div className='review-write-image-box'>
+                                <img className='write-image' src={imageUrl}/>
                                 <div className='image-close' onClick={() => onImageCloseButtonClickHandler(index)}>
-                                    <div className='close-icon'></div>
+                                    <div className='icon close-icon'></div>
                                 </div>
                             </div>
                         ))}
