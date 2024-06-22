@@ -67,6 +67,7 @@ function App() {
         <Route path={MEDICINE_DETAIL_PATH(':ITEM_SEQ')} element={<MedicineDetail />} />
         <Route path={SEARCH_PATH(':searchWord')} element={<Search />} />
         <Route path={MEDICINE_LOCATIONS_STORE_PATH(':searchWord')} element={<StoreSearch/>} />
+        <Route path='/auth/oauth-response/:token/:expirationTime' element={<OAuth />} />
         <Route path={SIGN_IN_PATH()} element={<SignIn />} />
         <Route path={SIGN_UP_PATH()} element={<SignUp />} />
         <Route path={MEDICINE_STORE_PATH()} element={<Store />} />
@@ -80,7 +81,6 @@ function App() {
             <UserUpdate />
           </ProtectedRoute>
         } />
-        <Route path='oauth-response/:token/:expirationTime' element={<OAuth/>} />
       </Route>
     </Routes>
   );
