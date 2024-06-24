@@ -1,6 +1,9 @@
 ## 💊이게머약? [의약품 검색 서비스, 1인 개발]
-### 이게머약? 백엔드 깃허브
+### 👩‍💻이게머약? 백엔드 깃허브
 https://github.com/sujin0225/medicine_back
+
+### 🎬시연영상
+https://drive.google.com/file/d/16eSN5SgHepx51bGeALv6So3Ci5jedKlG/view?usp=sharing
 
 ### 📆제작기간
 2024 1월 프로젝트 기획 [주제선정, 사이트 디자인, API 명세서 작성, ERD 설계]  
@@ -39,12 +42,12 @@ https://github.com/sujin0225/medicine_back
 ### 🔨기술 스택
 | ⚒️ | 기술스택 |
 |-------|-------|
-| Language | <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=FFF"/> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=FFF"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white">|
-| IDE | <img src="https://img.shields.io/badge/InteliJ-07090D?style=for-the-badge&logo=InteliJ&logoColor=white"> <img src="https://img.shields.io/badge/Visual Studio Code-0085D1?style=for-the-badge&logo=Visual Studio Code&logoColor=white"> <img src="https://img.shields.io/badge/Mysql Workbench-2E678B?style=for-the-badge&logo=MySQL&logoColor=white"> <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"> |
-| Database | <img src="https://img.shields.io/badge/MySQL-2E678B?style=for-the-badge&logo=MySQL&logoColor=white"> |
-| Framework | <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white"> <img src="https://img.shields.io/badge/JPA-07090D?style=for-the-badge&logo=JPA&logoColor=white"> |
-| Library | <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"> <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"> |
-| API | <img src="https://img.shields.io/badge/Java Mail Sender-007396?style=for-the-badge&logo=JavaMailSender&logoColor=white"> <img src="https://img.shields.io/badge/공공데이터포털api-0076C0?style=for-the-badge&logo=JavaMailSender&logoColor=white"> |
+| **Language** | <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=FFF"/> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=FFF"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white">|
+| **IDE** | <img src="https://img.shields.io/badge/InteliJ-07090D?style=for-the-badge&logo=InteliJ&logoColor=white"> <img src="https://img.shields.io/badge/Visual Studio Code-0085D1?style=for-the-badge&logo=Visual Studio Code&logoColor=white"> <img src="https://img.shields.io/badge/Mysql Workbench-2E678B?style=for-the-badge&logo=MySQL&logoColor=white"> <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"> |
+| **Database** | <img src="https://img.shields.io/badge/MySQL-2E678B?style=for-the-badge&logo=MySQL&logoColor=white"> |
+| **Framework** | <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white"> <img src="https://img.shields.io/badge/JPA-07090D?style=for-the-badge&logo=JPA&logoColor=white"> |
+| **Library** | <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"> <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"> |
+| **API** | <img src="https://img.shields.io/badge/Java Mail Sender-007396?style=for-the-badge&logo=JavaMailSender&logoColor=white"> <img src="https://img.shields.io/badge/공공데이터포털api-0076C0?style=for-the-badge&logo=JavaMailSender&logoColor=white"> |
 
 ### 📄ERD
 ![이게머약 (1)](https://github.com/sujin0225/medicine_front/assets/107300166/7e6de444-f821-41b7-b672-c3c9b718a2d7)
