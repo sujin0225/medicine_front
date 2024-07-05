@@ -1,10 +1,12 @@
 import './style.css'
-import { medicine } from 'publicapi';
 import { useEffect, useState } from 'react';
 import { MedicineListItem } from 'types/interface';
 import MedicineItem from 'components/MedicineItem/MedicineItem';
 import Pagination from 'components/Pagination/Pagination';
 import Search from 'components/Search/Search';
+import { GetMedicineListResponseDto } from 'apis/response/medicine';
+import { ResponseDto } from 'apis/response';
+import { getMedicineListRequest } from 'apis';
 
 export default function MedicineSearch() {
   const [medicineList, setMedicineList] = useState<MedicineListItem[]>([]);
@@ -12,25 +14,31 @@ export default function MedicineSearch() {
   const [totalCount, setTotalCount] = useState(0); 
 
   useEffect(() => {
-    fetchData(1); 
-  }, []); 
-  
+    getMedicineListRequest(0).then(getMedicineListResponse);
+  }, [])
 
-  const fetchData = async (pageNo: number) => {
-    try {
-      const data = await medicine(pageNo); 
-      setMedicineList(data.body.items); 
-      setTotalCount(data.body.totalCount); 
-      console.log("Medicine List:", data.body.items); 
-    } catch (error) {
-      console.error('데이터 불러오기 에러:', error);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page); // 페이지 번호 변경
+    getMedicineListRequest(page).then(getMedicineListResponse); // 변경된 페이지 번호로 데이터 다시 가져오기
+  };
+
+  //의약품 리스트 가져오기(GET)
+  const getMedicineListResponse = (responseBody: GetMedicineListResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'DBE') {
+      alert('데이터베이스 오류입니다.');
+      return;
     }
-  };
+    if (code !== 'SU') return;
 
-  const handlePageChange = (newPageNo: number) => {
-    setCurrentPage(newPageNo); // 페이지 번호 변경
-    fetchData(newPageNo); // 변경된 페이지 번호로 데이터 다시 가져오기
-  };
+    const { medicineListItems } = responseBody as GetMedicineListResponseDto;
+    const { totalCount } = responseBody as GetMedicineListResponseDto;
+    setMedicineList(medicineListItems);
+    setTotalCount(totalCount); 
+    console.log(medicineListItems);
+    console.log(totalCount);
+  }
 
   return (
     <>
@@ -55,6 +63,9 @@ export default function MedicineSearch() {
           render={() => (
             <div id='medicine-search'>
               <div className='medicine-search-container'>
+                {/* {medicineList.map((medicineListItem, index) => (
+                  <MedicineItem key={index} medicineListItem={medicineListItem} />
+                ))} */}
                 {medicineList.map((medicineListItem, index) => (
                   <MedicineItem key={index} medicineListItem={medicineListItem} />
                 ))}

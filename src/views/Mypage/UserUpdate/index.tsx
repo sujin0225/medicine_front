@@ -128,13 +128,20 @@ const onPasswordButtonClickHandler = () => {
 //삭제 버튼 클릭 이벤트 처리 event handler
 const onDeleteButtonClickHandler = () => {
   if (!loginUser || !cookies.accessToken) return;
+
   MyalertCancle("warning", "회원탈퇴 안내", "회원탈퇴 하시면, 이게머약?과 함께한 모든 데이터가 삭제됩니다. 그래도 정말로 탈퇴하시겠습니까?", "취소", "확인")
     .then((result) => {
       if (result.isConfirmed) {
-        deleteUserRequest(cookies.accessToken).then(deleteUserResponse);
+        Myalert("success", "회원탈퇴 안내", "탈퇴 처리 되었습니다. 이용해 주셔서 감사합니다.", "확인")
+          .then((result) => {
+            if (result.isConfirmed) {
+              deleteUserRequest(cookies.accessToken).then(deleteUserResponse);
+            }
+          });
       }
     });
 }
+
 
 const onPasswordCheckChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
   const { value } = event.target;

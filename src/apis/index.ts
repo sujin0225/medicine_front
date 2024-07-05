@@ -4,7 +4,7 @@ import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckRe
 import { GetReviewListResponseDto, PostReviewResponseDto, DeleteReviewResponseDto, PatchReviewResponseDto, GetReviewResponseDto,
          GetHelpfulResponseDto, GetFavoriteMedicineResponseDto, PutFavoriteMedicineResponseDto, GetMyReviewResponseDto } from "./response/review"
 import { PostSearchResponseDto, GetPopularListReponseDto } from "./response/search";
-import { GetMedicineResponeDto, GetMedicinePermissionResponseDto, GetMedicineInfoResponseDto } from "./response/medicine";
+import { GetMedicineResponeDto, GetMedicinePermissionResponseDto, GetMedicineInfoResponseDto, GetMedicineListResponseDto } from "./response/medicine";
 import { GetSignInUserResponseDto, DeleteUserResponseDto, PatchPasswordResponseDto, UpdateEmailCertificationResponseDto, UpdateEmailResponseDto } from "./response/user";
 import { PostReviewRequestDto, PatchReviewRequestDto, PutFavoriteMedicineRequestDto } from "./request/review";
 import { PatchPasswordRequestDto, UpdateEmailCertificationRequestDto, UpdateEmailRequestDto } from "./request/user";
@@ -63,6 +63,8 @@ const UPDATE_EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/user/update-email-ce
 const UPDATE_CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/user/patchEmail`;
 const GET_MEDICINE_PERMISSION_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicinePermission/${ITEM_SEQ}`;
 const GET_MEDICINE_INFO_URL = (ITEM_SEQ: string) => `${API_DOMAIN}/medicineInfo/${ITEM_SEQ}`;
+const GET_MEDICINE_LIST_URL = (page: number) => `${API_DOMAIN}/medicine/list?page=${page}&pageSize=&item_name=`;
+const GET_SEARCH_MEDICINE_LIST_URL = (searchWord: string, page: number) => `${API_DOMAIN}/medicine/list?page=${page}&pageSize=&item_name=${searchWord}`;
 const FILE_DOMAIN = `${DOMAIN}/file`;
 
 //아이디 중복 체크
@@ -321,6 +323,35 @@ export const getMedicineStoreSearchRequest = async (searchWord: string) => {
     const result = await axios.get(GET_MEDICINE_STORE_SEARCH_URL(searchWord))
     .then(response => {
         const responseBody: GetMedicineStoreSearchResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+//의약품 리스트 불러오기
+export const getMedicineListRequest = async(page: number) => {
+    const result = await axios.get(GET_MEDICINE_LIST_URL(page))
+    .then(response => {
+        const responseBody: GetMedicineListResponseDto = response.data;
+        return responseBody;
+    })
+    .catch(error => {
+        if(!error.response) return null;
+        const responseBody: ResponseDto = error.response.data;
+        return responseBody;
+    })
+    return result;
+}
+
+//의약품 검색
+export const getSearchMedicineListRequest = async(searchWord: string, page: number) => {
+    const result = await axios.get(GET_SEARCH_MEDICINE_LIST_URL(searchWord, page))
+    .then(response => {
+        const responseBody: GetMedicineListResponseDto = response.data;
         return responseBody;
     })
     .catch(error => {

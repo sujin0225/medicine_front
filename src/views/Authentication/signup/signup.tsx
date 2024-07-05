@@ -39,7 +39,7 @@ export default function SignIn() {
   const [isIdCheck, setIdCheck] = useState<boolean>(false);
   const [isCertificationCheck, setCertificationCheck] = useState<boolean>(false);
 
-  const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;  
+  const emailPattern = /^[a-zA-Z0-9._-]+@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
   const idPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,12}$/;
   const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()\-_=+\[{\]};:'",<.>/?])[a-zA-Z0-9!@#$%^&*()\-_=+\[{\]};:'",<.>/?]{8,12}$/;
 
