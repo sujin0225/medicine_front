@@ -63,9 +63,6 @@ export default function MedicineSearch() {
           render={() => (
             <div id='medicine-search'>
               <div className='medicine-search-container'>
-                {/* {medicineList.map((medicineListItem, index) => (
-                  <MedicineItem key={index} medicineListItem={medicineListItem} />
-                ))} */}
                 {medicineList.map((medicineListItem, index) => (
                   <MedicineItem key={index} medicineListItem={medicineListItem} />
                 ))}

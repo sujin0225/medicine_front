@@ -4,5 +4,6 @@ export default interface MedicineListItem {
     form_CODE_NAME: string;
     item_IMAGE: string;
     item_NAME: string;
+    class_NAME: string;
     item_SEQ: string;
 }
